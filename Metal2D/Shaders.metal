@@ -1,34 +1,48 @@
 //
-//  Shaders.metal
+//  ImageShaders.metal
 //  Metal2D
 //
-//  Created by Pim Coumans on 25/11/16.
-//  Copyright © 2016 pixelrock. All rights reserved.
+//  Created by Kaz Yoshikawa on 12/22/15.
+//
 //
 
 #include <metal_stdlib>
-
 using namespace metal;
 
-struct VertexInOut
-{
-    float4  position [[position]];
-    float4  color;
+
+struct VertexIn {
+    packed_float4 position [[ attribute(0) ]];
+    packed_float2 texcoords [[ attribute(1) ]];
 };
 
-vertex VertexInOut passThroughVertex(uint vid [[ vertex_id ]],
-                                     constant packed_float4* position  [[ buffer(0) ]],
-                                     constant packed_float4* color    [[ buffer(1) ]])
-{
-    VertexInOut outVertex;
-    
-    outVertex.position = position[vid];
-    outVertex.color    = color[vid];
-    
+struct VertexOut {
+    float4 position [[ position ]];
+    float2 texcoords;
+};
+
+struct Uniforms {
+    float4x4 modelViewProjectionMatrix;
+};
+
+vertex VertexOut image_vertex(
+                              device VertexIn * vertices [[ buffer(0) ]],
+                              constant Uniforms & uniforms [[ buffer(1) ]],
+                              uint vid [[ vertex_id ]]
+                              ) {
+    VertexOut outVertex;
+    VertexIn inVertex = vertices[vid];
+    outVertex.position = uniforms.modelViewProjectionMatrix * float4(inVertex.position);
+    outVertex.texcoords = inVertex.texcoords;
     return outVertex;
-};
+}
 
-fragment half4 passThroughFragment(VertexInOut inFrag [[stage_in]])
-{
-    return half4(inFrag.color);
-};
+fragment float4 image_fragment(
+                               VertexOut vertexIn [[ stage_in ]],
+                               constant Uniforms & uniforms [[ buffer(0) ]],
+                               texture2d<float, access::sample> colorTexture [[ texture(0) ]],
+                               sampler colorSampler [[ sampler(0) ]]
+                               ) {
+    float3 color = colorTexture.sample(colorSampler, vertexIn.texcoords).rgb;
+    return float4(color, 1);
+}
+

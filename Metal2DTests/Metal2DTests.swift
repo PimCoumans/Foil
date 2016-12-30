@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Metal2D
+@testable import Metal2DiOS
 
 class Metal2DTests: XCTestCase {
     
@@ -21,9 +21,34 @@ class Metal2DTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testNodeBehavior() {
+        let scene = Scene()
+        let rootNode = Node()
+        let firstChild = Node()
+        let secondChild = Node()
+        
+        rootNode.addChild(firstChild)
+        scene.addChild(rootNode)
+        rootNode.addChild(secondChild)
+        XCTAssert(rootNode.children.count == 2)
+        for node in rootNode.children {
+            XCTAssert(node.scene == scene)
+            XCTAssert(node.parent == rootNode)
+        }
+        
+        rootNode.removeFromParent()
+        for node in rootNode.children {
+            XCTAssert(node.scene == nil)
+            XCTAssert(node.parent == rootNode)
+        }
+        
+        firstChild.removeFromParent()
+        XCTAssert(rootNode.children.count == 1)
+        XCTAssert(firstChild.parent == nil)
+        
+        secondChild.removeFromParent()
+        XCTAssert(rootNode.children.count == 0)
+        XCTAssert(secondChild.parent == nil)
     }
     
     func testPerformanceExample() {
