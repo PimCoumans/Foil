@@ -55,6 +55,9 @@ class RenderView: MTKView, MTKViewDelegate {
     }
     
     func initializeMetal() {
+        #if os(OSX)
+        window?.acceptsMouseMovedEvents = true
+        #endif
         screen = Screen(renderView: self)
         renderBlock = { [weak self] context in
             if let scene = self?.scene {

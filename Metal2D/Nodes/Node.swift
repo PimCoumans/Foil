@@ -11,7 +11,7 @@ import QuartzCore
 import GLKit
 import MetalKit
 
-class Node {
+class Node: Interactable {
     
     // MARK: Geometry
 	// Position and scale are based on the parents local coordinate system
@@ -25,7 +25,7 @@ class Node {
 	}
     
     // MARK: Hierarchy
-    private(set) var scene:Scene? {
+    fileprivate(set) var scene:Scene? {
         willSet {
             willMoveToScene(newValue)
         }
@@ -36,11 +36,11 @@ class Node {
             }
         }
     }
-    private(set) weak var parent:Node? {
+    fileprivate(set) weak var parent:Node? {
         willSet { willMoveToParent(newValue) }
         didSet { didMoveToParent() }
     }
-    private(set) var children = [Node]()
+    fileprivate(set) var children = [Node]()
     
     let uid:Int
 	init() {
@@ -85,11 +85,26 @@ class Node {
 			node.renderRecursively(with:context)
         }
     }
+	
+	// MARK: Interactable
+	var handlesInput: Bool { return false }
+	
+	var enabled: Bool = false
+	var highlighted: Bool = false
+	var selected: Bool = false
+	
+	var highlightedChildNode: Node? = nil
+	var selectedChildNode: Node? = nil
+	
+	func touchBegan(atPoint point: CGPoint) {}
+	func touchMoved(toPoint point: CGPoint, delta: CGPoint) {}
+	func touchEnded(atPoint point: CGPoint, delta: CGPoint) {}
+	func touchCancelled() {}
 }
 
 extension Node: Hashable {
     
-    private static var uid = 1
+    fileprivate static var uid = 1
     fileprivate static func nextUid() -> Int {
         uid += 1
         return uid
@@ -134,5 +149,12 @@ extension Node {
 			block(currentNode)
 			node = currentNode.parent
 		}
+	}
+}
+
+extension Node {
+	// MARK: Node finding
+	func node(atPosition position:CGPoint) -> Node? {
+		return nil
 	}
 }

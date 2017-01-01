@@ -41,16 +41,28 @@
 		3E8E66E61DE89D4300DBB707 /* TextureNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66E41DE89D4300DBB707 /* TextureNode.swift */; };
 		3EAF82031DF30F23003D229F /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EAF82021DF30F23003D229F /* Screen.swift */; };
 		3EAF82041DF30F23003D229F /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EAF82021DF30F23003D229F /* Screen.swift */; };
+		3EBF1B171E1962B100608E9C /* Interactable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B161E1962B100608E9C /* Interactable.swift */; };
+		3EBF1B181E1962B100608E9C /* Interactable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B161E1962B100608E9C /* Interactable.swift */; };
+		3EBF1B191E1962B100608E9C /* Interactable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B161E1962B100608E9C /* Interactable.swift */; };
+		3EBF1B231E196B7A00608E9C /* RenderView+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */; };
+		3EBF1B241E196B7A00608E9C /* RenderView+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */; };
 		3ECD41711E16930B00B64CE3 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E76602E1E15294900C302BE /* RenderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3E8E66CC1DE8781700DBB707 /* PBXContainerItemProxy */ = {
+		3EBF1B1A1E19640A00608E9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3E8E66A61DE8781600DBB707 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3E7660331E155B6F00C302BE;
+			remoteInfo = Metal2DMac;
+		};
+		3EBF1B201E196AE200608E9C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3E8E66A61DE8781600DBB707 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 3E8E66AD1DE8781600DBB707;
-			remoteInfo = Metal2D;
+			remoteInfo = Metal2DiOS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -83,6 +95,9 @@
 		3E8E66DE1DE8789800DBB707 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; usesTabs = 1; };
 		3E8E66E41DE89D4300DBB707 /* TextureNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureNode.swift; sourceTree = "<group>"; usesTabs = 1; };
 		3EAF82021DF30F23003D229F /* Screen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; usesTabs = 1; };
+		3EBF1B161E1962B100608E9C /* Interactable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interactable.swift; sourceTree = "<group>"; };
+		3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RenderView+Interaction.swift"; sourceTree = "<group>"; };
+		3EBF1B251E196C6400608E9C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +189,7 @@
 		3E8E66B01DE8781600DBB707 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3EBF1B251E196C6400608E9C /* AppKit.framework */,
 				3E76604E1E1561AD00C302BE /* ModelIO.framework */,
 				3E76604C1E1561A400C302BE /* MetalKit.framework */,
 				3E76604A1E15619F00C302BE /* Metal.framework */,
@@ -188,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				3E8E66DA1DE8786500DBB707 /* Nodes */,
+				3EBF1B151E19629000608E9C /* Interaction */,
 				3E8E66BC1DE8781600DBB707 /* Shaders.metal */,
 				3E76602E1E15294900C302BE /* RenderView.swift */,
 			);
@@ -212,6 +229,15 @@
 				3EAF82021DF30F23003D229F /* Screen.swift */,
 			);
 			path = Nodes;
+			sourceTree = "<group>";
+		};
+		3EBF1B151E19629000608E9C /* Interaction */ = {
+			isa = PBXGroup;
+			children = (
+				3EBF1B161E1962B100608E9C /* Interactable.swift */,
+				3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */,
+			);
+			path = Interaction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,7 +288,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				3E8E66CD1DE8781700DBB707 /* PBXTargetDependency */,
+				3EBF1B1B1E19640A00608E9C /* PBXTargetDependency */,
+				3EBF1B211E196AE200608E9C /* PBXTargetDependency */,
 			);
 			name = Metal2DTests;
 			productName = Metal2DTests;
@@ -357,6 +384,8 @@
 				3E7660371E155B6F00C302BE /* AppDelegate.swift in Sources */,
 				3E7660491E155B9000C302BE /* RenderView.swift in Sources */,
 				3E7660461E155B9000C302BE /* Screen.swift in Sources */,
+				3EBF1B191E1962B100608E9C /* Interactable.swift in Sources */,
+				3EBF1B241E196B7A00608E9C /* RenderView+Interaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +402,8 @@
 				3EAF82031DF30F23003D229F /* Screen.swift in Sources */,
 				3E76602F1E15294900C302BE /* RenderView.swift in Sources */,
 				3E2AA1011E16CF2700912C7F /* ExampleScene.swift in Sources */,
+				3EBF1B171E1962B100608E9C /* Interactable.swift in Sources */,
+				3EBF1B231E196B7A00608E9C /* RenderView+Interaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +416,7 @@
 				3E8E66E01DE8789800DBB707 /* Scene.swift in Sources */,
 				3E8E66E61DE89D4300DBB707 /* TextureNode.swift in Sources */,
 				3ECD41711E16930B00B64CE3 /* RenderView.swift in Sources */,
+				3EBF1B181E1962B100608E9C /* Interactable.swift in Sources */,
 				3EAF82041DF30F23003D229F /* Screen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -392,10 +424,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3E8E66CD1DE8781700DBB707 /* PBXTargetDependency */ = {
+		3EBF1B1B1E19640A00608E9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3E7660331E155B6F00C302BE /* Metal2DMac */;
+			targetProxy = 3EBF1B1A1E19640A00608E9C /* PBXContainerItemProxy */;
+		};
+		3EBF1B211E196AE200608E9C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3E8E66AD1DE8781600DBB707 /* Metal2DiOS */;
-			targetProxy = 3E8E66CC1DE8781700DBB707 /* PBXContainerItemProxy */;
+			targetProxy = 3EBF1B201E196AE200608E9C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -586,31 +623,24 @@
 			};
 			name = Release;
 		};
-		3E8E66D81DE8781700DBB707 /* Debug */ = {
+		3EBF1B1E1E19669400608E9C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = Metal2DTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2DTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Metal2DTests;
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Metal2DiOS.app/Metal2DiOS";
 			};
 			name = Debug;
 		};
-		3E8E66D91DE8781700DBB707 /* Release */ = {
+		3EBF1B1F1E19669400608E9C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = Metal2DTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2DTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Metal2DTests;
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Metal2DiOS.app/Metal2DiOS";
 			};
 			name = Release;
 		};
@@ -647,8 +677,8 @@
 		3E8E66D71DE8781700DBB707 /* Build configuration list for PBXNativeTarget "Metal2DTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3E8E66D81DE8781700DBB707 /* Debug */,
-				3E8E66D91DE8781700DBB707 /* Release */,
+				3EBF1B1E1E19669400608E9C /* Debug */,
+				3EBF1B1F1E19669400608E9C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -23,9 +23,19 @@ class TextureNode: Node {
 		var modelViewProjectionMatrix: GLKMatrix4
 	}
 	
+	override var frame: CGRect {
+		var frame = CGRect(origin: position, size: size)
+		frame.size.width *= scale.width
+		frame.size.height *= scale.height
+		frame.origin.x -= frame.width * anchorPoint.x
+		frame.origin.y -= frame.height * anchorPoint.y
+		return frame
+	}
+	
     let image: CGImage
     let size: CGSize
-    
+	
+	// Coordinates in global space
     var boundingRect: CGRect {
         var rect = CGRect()
         rect.origin = globalPosition
@@ -115,7 +125,7 @@ class TextureNode: Node {
 	
 	let texture:MTLTexture
 	
-	private let device:MTLDevice
+	fileprivate let device:MTLDevice
 	
 	var vertices:[Vertex] {
 		let rect = boundingRect

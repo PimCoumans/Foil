@@ -24,15 +24,17 @@ class ExampleScene: Scene {
                     let image = NSImage(named:"pim")
                 #endif
                 renderView.screen.zoomScale = 60
-                textureNode = TextureNode(renderView: renderView, image:image, size:CGSize(width:20, height:20))
+                textureNode = TextureNode(renderView: renderView, image: image, size:CGSize(width:20, height:20))
                 addChild(textureNode)
             }
         }
     }
     
+    var animating = true
     var moveDirection = CGPoint(x: 1, y: 1)
     override func update() {
-        guard let renderView = renderView else { return }
+        guard let renderView = renderView, animating else { return }
+        
         textureNode.position.x += moveDirection.x
         textureNode.position.y += moveDirection.y
         let boundingRect = textureNode.boundingRect
@@ -54,6 +56,26 @@ class ExampleScene: Scene {
             textureNode.position.y = screenbounds.minY + (textureNode.size.height / 2)
             moveDirection.y = 0 - moveDirection.y
         }
+    }
+    
+    override func touchBegan(atPoint point: CGPoint) {
+        if textureNode.boundingRect.contains(point) {
+            animating = false
+        }
+    }
+    
+    override func touchMoved(toPoint point: CGPoint, delta: CGPoint) {
+        guard !animating else { return }
+        textureNode.position = point
+    }
+    
+    override func touchEnded(atPoint point: CGPoint, delta: CGPoint) {
+        animating = true
+        moveDirection = delta
+    }
+    
+    override func touchCancelled() {
+        animating = true
     }
     
 }
