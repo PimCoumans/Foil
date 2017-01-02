@@ -30,10 +30,9 @@ class ExampleScene: Scene {
         }
     }
     
-    var animating = true
     var moveDirection = CGPoint(x: 1, y: 1)
     override func update() {
-        guard let renderView = renderView, animating else { return }
+        guard let renderView = renderView, selectedChildNode == nil else { return }
         
         textureNode.position.x += moveDirection.x
         textureNode.position.y += moveDirection.y
@@ -58,24 +57,27 @@ class ExampleScene: Scene {
         }
     }
     
-    override func touchBegan(atPoint point: CGPoint) {
-        if textureNode.boundingRect.contains(point) {
-            animating = false
+    override func touchBegan(atPosition position: CGPoint) {
+        if let node = node(atPosition: position, where: {$0.frame.contains(position) && $0 != self}) {
+            selectedChildNode = node
         }
     }
     
-    override func touchMoved(toPoint point: CGPoint, delta: CGPoint) {
-        guard !animating else { return }
-        textureNode.position = point
+    override func touchMoved(toPosition position: CGPoint, delta: CGPoint) {
+        if let node = selectedChildNode {
+            node.position = position
+        }
     }
     
-    override func touchEnded(atPoint point: CGPoint, delta: CGPoint) {
-        animating = true
-        moveDirection = delta
+    override func touchEnded(atPosition position: CGPoint, delta: CGPoint) {
+        if let _ = selectedChildNode {
+            selectedChildNode = nil
+            moveDirection = delta
+        }
     }
     
     override func touchCancelled() {
-        animating = true
+        selectedChildNode = nil
     }
     
 }

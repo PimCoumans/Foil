@@ -89,16 +89,16 @@ class Node: Interactable {
 	// MARK: Interactable
 	var handlesInput: Bool { return false }
 	
-	var enabled: Bool = false
+	var enabled: Bool = true
 	var highlighted: Bool = false
 	var selected: Bool = false
 	
 	var highlightedChildNode: Node? = nil
 	var selectedChildNode: Node? = nil
 	
-	func touchBegan(atPoint point: CGPoint) {}
-	func touchMoved(toPoint point: CGPoint, delta: CGPoint) {}
-	func touchEnded(atPoint point: CGPoint, delta: CGPoint) {}
+	func touchBegan(atPosition point: CGPoint) {}
+	func touchMoved(toPosition point: CGPoint, delta: CGPoint) {}
+	func touchEnded(atPosition point: CGPoint, delta: CGPoint) {}
 	func touchCancelled() {}
 }
 
@@ -150,11 +150,51 @@ extension Node {
 			node = currentNode.parent
 		}
 	}
+	
+	func convert(worldPosition position:CGPoint) -> CGPoint {
+		var localPosition = position - globalPosition
+		localPosition.x /= scale.width
+		localPosition.y /= scale.height
+		return localPosition
+	}
+	
+	func convert(position:CGPoint, toNode:Node) -> CGPoint {
+		return .zero
+	}
+	
+	func convert(position:CGPoint, fromNode:Node) -> CGPoint {
+		return .zero
+	}
 }
 
 extension Node {
 	// MARK: Node finding
-	func node(atPosition position:CGPoint) -> Node? {
+	
+	/// Searches the reciever for nodes in it's local coordinate space
+	///
+	/// - Parameter position: position in local coordinate space
+	/// - Returns: lowest childNote at given point
+	
+	func node(atPosition position: CGPoint, where predicate: (Node) -> Bool) -> Node? {
+		if predicate(self) {
+			return self
+		}
+		for node in children {
+			var localPosition = position - node.position
+			localPosition.x *= node.scale.width
+			localPosition.y *= node.scale.height
+			if let node = node.node(atPosition: localPosition, where:predicate) {
+				return node
+			}
+		}
 		return nil
+	}
+	
+	func node(atPosition position: CGPoint) -> Node? {
+		return node(atPosition: position, where: { $0.frame.contains(position) })
+	}
+	
+	func interactableNode(atPosition position: CGPoint) -> Node? {
+		return node(atPosition: position, where: { $0.frame.contains(position) && $0.enabled && $0.handlesInput })
 	}
 }

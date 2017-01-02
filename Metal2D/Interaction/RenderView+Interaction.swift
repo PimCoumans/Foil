@@ -22,25 +22,42 @@ extension RenderView {
     }
     
     func touchBegan(atPoint point: CGPoint) {
-        scene?.touchBegan(atPoint: globalPoint(forScreenPoint: point))
+        let worldPosition = self.worldPosition(forScreenPosition: point)
+        if let node = scene?.interactableNode(atPosition: worldPosition) {
+            scene?.inputReceivingNode = node
+            let localPosition = node.convert(worldPosition: worldPosition)
+            node.touchBegan(atPosition: localPosition)
+        }
     }
     
     func touchMoved(toPoint point: CGPoint, delta:CGPoint) {
-        let convertedDelta = CGPoint(x:delta.x * pixelScale, y:-delta.y * pixelScale)
-        scene?.touchMoved(toPoint:globalPoint(forScreenPoint: point), delta: convertedDelta)
+        if let node = scene?.inputReceivingNode ?? scene {
+            let worldPosition = self.worldPosition(forScreenPosition: point)
+            let worldDelta = delta * pixelScale
+            let localPosition = node.convert(worldPosition: worldPosition)
+            let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
+            node.touchMoved(toPosition: localPosition, delta: localDelta)
+        }
     }
     
     func touchEnded(atPoint point:CGPoint, delta:CGPoint) {
-        let convertedDelta = CGPoint(x:delta.x * pixelScale, y:-delta.y * pixelScale)
-        scene?.touchEnded(atPoint: globalPoint(forScreenPoint: point), delta: convertedDelta)
+        if let node = scene?.inputReceivingNode ?? scene {
+            let worldPosition = self.worldPosition(forScreenPosition: point)
+            let worldDelta = delta * pixelScale
+            let localPosition = node.convert(worldPosition: worldPosition)
+            let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
+            node.touchEnded(atPosition: localPosition, delta: localDelta)
+        }
     }
     
     func touchCancelled() {
-        Swift.print("Cancelled!")
+        if let node = scene?.inputReceivingNode ?? scene {
+            node.touchCancelled()
+        }
     }
     
-    func globalPoint(forScreenPoint screenPoint:CGPoint) -> CGPoint {
-        var point = CGPoint(x: screenPoint.x / bounds.width, y: screenPoint.y / bounds.height)
+    func worldPosition(forScreenPosition screenPosition:CGPoint) -> CGPoint {
+        var point = CGPoint(x: screenPosition.x / bounds.width, y: screenPosition.y / bounds.height)
         let screenBounds = screen.bounds
         point.x *= screenBounds.width
         point.y *= 1 - screenBounds.height
@@ -50,6 +67,7 @@ extension RenderView {
     }
     
     #if os(OSX)
+    // FIXME: Use gesture recognizers instead of mouse events
     override func mouseDown(with event: NSEvent) {
         let location = event.locationInWindow
         touchBegan(atPoint: location)
@@ -64,6 +82,7 @@ extension RenderView {
     override func mouseUp(with event: NSEvent) {
         let location = event.locationInWindow
         let delta = CGPoint(x:event.deltaX, y:event.deltaY)
+        // FIXME: Delta does not work when released
         touchEnded(atPoint: location, delta: delta)
     }
     #elseif os(iOS)

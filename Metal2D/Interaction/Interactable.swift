@@ -9,7 +9,9 @@
 import QuartzCore
 
 protocol Interactable {
+    
     var handlesInput: Bool { get }
+    
     var enabled: Bool { get set }
     var highlighted: Bool { get set }
     var selected: Bool { get set }
@@ -17,8 +19,8 @@ protocol Interactable {
     var highlightedChildNode: Node? { get set }
     var selectedChildNode: Node? { get set }
     
-    func touchBegan(atPoint point: CGPoint)
-    func touchMoved(toPoint point: CGPoint, delta: CGPoint)
-    func touchEnded(atPoint point: CGPoint, delta: CGPoint)
+    func touchBegan(atPosition position: CGPoint)
+    func touchMoved(toPosition position: CGPoint, delta: CGPoint)
+    func touchEnded(atPosition position: CGPoint, delta: CGPoint)
     func touchCancelled()
 }

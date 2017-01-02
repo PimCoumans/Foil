@@ -23,6 +23,12 @@
 		3E76604B1E15619F00C302BE /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E76604A1E15619F00C302BE /* Metal.framework */; };
 		3E76604D1E1561A400C302BE /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E76604C1E1561A400C302BE /* MetalKit.framework */; };
 		3E76604F1E1561AD00C302BE /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E76604E1E1561AD00C302BE /* ModelIO.framework */; };
+		3E7E02741E1AA4770000165D /* CGPoint+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02731E1AA4770000165D /* CGPoint+Math.swift */; };
+		3E7E02751E1AA4770000165D /* CGPoint+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02731E1AA4770000165D /* CGPoint+Math.swift */; };
+		3E7E02771E1AA4960000165D /* CGSize+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02761E1AA4960000165D /* CGSize+Math.swift */; };
+		3E7E02781E1AA4960000165D /* CGSize+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02761E1AA4960000165D /* CGSize+Math.swift */; };
+		3E7E02791E1AA49B0000165D /* CGPoint+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02731E1AA4770000165D /* CGPoint+Math.swift */; };
+		3E7E027A1E1AA49B0000165D /* CGSize+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7E02761E1AA4960000165D /* CGSize+Math.swift */; };
 		3E80B2421E16A35D0005956A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80B2391E16A35D0005956A /* AppDelegate.swift */; };
 		3E80B2431E16A35D0005956A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23A1E16A35D0005956A /* Assets.xcassets */; };
 		3E80B2441E16A35D0005956A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23B1E16A35D0005956A /* LaunchScreen.storyboard */; };
@@ -77,6 +83,8 @@
 		3E76604A1E15619F00C302BE /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
 		3E76604C1E1561A400C302BE /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/MetalKit.framework; sourceTree = DEVELOPER_DIR; };
 		3E76604E1E1561AD00C302BE /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/ModelIO.framework; sourceTree = DEVELOPER_DIR; };
+		3E7E02731E1AA4770000165D /* CGPoint+Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Math.swift"; sourceTree = "<group>"; };
+		3E7E02761E1AA4960000165D /* CGSize+Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Math.swift"; sourceTree = "<group>"; };
 		3E80B2391E16A35D0005956A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E80B23A1E16A35D0005956A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E80B23C1E16A35D0005956A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -150,6 +158,15 @@
 			path = Metal2DMac;
 			sourceTree = "<group>";
 		};
+		3E7E02721E1AA4690000165D /* Vector Math */ = {
+			isa = PBXGroup;
+			children = (
+				3E7E02731E1AA4770000165D /* CGPoint+Math.swift */,
+				3E7E02761E1AA4960000165D /* CGSize+Math.swift */,
+			);
+			path = "Vector Math";
+			sourceTree = "<group>";
+		};
 		3E80B2381E16A35D0005956A /* Metal2DiOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,6 +222,7 @@
 			children = (
 				3E8E66DA1DE8786500DBB707 /* Nodes */,
 				3EBF1B151E19629000608E9C /* Interaction */,
+				3E7E02721E1AA4690000165D /* Vector Math */,
 				3E8E66BC1DE8781600DBB707 /* Shaders.metal */,
 				3E76602E1E15294900C302BE /* RenderView.swift */,
 			);
@@ -317,7 +335,6 @@
 					3E8E66CA1DE8781700DBB707 = {
 						CreatedOnToolsVersion = 8.2;
 						ProvisioningStyle = Automatic;
-						TestTargetID = 3E8E66AD1DE8781600DBB707;
 					};
 				};
 			};
@@ -381,10 +398,12 @@
 				3E7660431E155B9000C302BE /* Node.swift in Sources */,
 				3E7660391E155B6F00C302BE /* ViewController.swift in Sources */,
 				3E7660451E155B9000C302BE /* TextureNode.swift in Sources */,
+				3E7E02751E1AA4770000165D /* CGPoint+Math.swift in Sources */,
 				3E7660371E155B6F00C302BE /* AppDelegate.swift in Sources */,
 				3E7660491E155B9000C302BE /* RenderView.swift in Sources */,
 				3E7660461E155B9000C302BE /* Screen.swift in Sources */,
 				3EBF1B191E1962B100608E9C /* Interactable.swift in Sources */,
+				3E7E02781E1AA4960000165D /* CGSize+Math.swift in Sources */,
 				3EBF1B241E196B7A00608E9C /* RenderView+Interaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -399,10 +418,12 @@
 				3E8E66E51DE89D4300DBB707 /* TextureNode.swift in Sources */,
 				3E80B2471E16A35D0005956A /* GameViewController.swift in Sources */,
 				3E80B2421E16A35D0005956A /* AppDelegate.swift in Sources */,
+				3E7E02741E1AA4770000165D /* CGPoint+Math.swift in Sources */,
 				3EAF82031DF30F23003D229F /* Screen.swift in Sources */,
 				3E76602F1E15294900C302BE /* RenderView.swift in Sources */,
 				3E2AA1011E16CF2700912C7F /* ExampleScene.swift in Sources */,
 				3EBF1B171E1962B100608E9C /* Interactable.swift in Sources */,
+				3E7E02771E1AA4960000165D /* CGSize+Math.swift in Sources */,
 				3EBF1B231E196B7A00608E9C /* RenderView+Interaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,9 +435,11 @@
 				3E8E66D01DE8781700DBB707 /* Metal2DTests.swift in Sources */,
 				3E8E66DD1DE8787500DBB707 /* Node.swift in Sources */,
 				3E8E66E01DE8789800DBB707 /* Scene.swift in Sources */,
+				3E7E027A1E1AA49B0000165D /* CGSize+Math.swift in Sources */,
 				3E8E66E61DE89D4300DBB707 /* TextureNode.swift in Sources */,
 				3ECD41711E16930B00B64CE3 /* RenderView.swift in Sources */,
 				3EBF1B181E1962B100608E9C /* Interactable.swift in Sources */,
+				3E7E02791E1AA49B0000165D /* CGPoint+Math.swift in Sources */,
 				3EAF82041DF30F23003D229F /* Screen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
