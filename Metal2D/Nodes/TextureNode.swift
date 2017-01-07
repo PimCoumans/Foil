@@ -6,10 +6,18 @@
 //  Copyright © 2016 pixelrock. All rights reserved.
 //
 
-import QuartzCore
+import CoreGraphics
 import Metal
 import MetalKit
 import GLKit
+
+#if os(iOS)
+	import UIKit
+	typealias Image = UIImage
+#elseif os(OSX)
+	import Cocoa
+	typealias Image = NSImage
+#endif
 
 fileprivate let VertextCount = 6
 
@@ -32,8 +40,44 @@ class TextureNode: Node {
 		return frame
 	}
 	
-    let image: CGImage
+    var image: NSImage {
+		didSet {
+			if let cgImage = TextureNode.convert(image: image) {
+				self.cgImage = cgImage
+			}
+		}
+	}
+	var cgImage: CGImage {
+		didSet {
+			// Update texture if available
+			if let textureLoader = TextureNode.textureLoader {
+				self.texture = try! textureLoader.newTexture(with: cgImage, options: nil)
+			}
+		}
+	}
     let size: CGSize
+	
+	private class func convert(image:Image) -> CGImage? {
+		#if os(OSX)
+			if let data = image.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
+				if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
+					return cgImage
+				}
+			}
+		#elseif os(iOS)
+			if let data = image.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
+				if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
+					if let context = CGContext(data: nil, width: image.width, height: image.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+						context.draw(image, in: context.boundingBoxOfClipPath)
+						if let newImage = context.makeImage() {
+							return newImage
+						}
+					}
+				}
+			}
+		#endif
+		return nil
+	}
 	
 	// Coordinates in global space
     var boundingRect: CGRect {
@@ -47,49 +91,45 @@ class TextureNode: Node {
         return rect
     }
 	
-	#if os(iOS)
-	convenience init?(renderView:RenderView, image:UIImage?, size:CGSize) {
-		if let cgImage = image?.cgImage {
-			self.init(renderView:renderView, image:cgImage, size:size)
-			return
-		}
-		return nil
-	}
-	#elseif os(OSX)
-	convenience init?(renderView:RenderView, image:NSImage?, size:CGSize) {
-		if let data = image?.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
-			if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
-				self.init(renderView:renderView, image:cgImage, size:size)
-				return
-			}
-		}
-		return nil
-	}
-	#endif
-	
-	init?(renderView:RenderView, image:CGImage, size:CGSize) {
-		
-		guard let device = renderView.device else {
-			return nil
-		}
+	init?(image:Image, size:CGSize) {
 		
 		self.image = image
+		if let cgImage = TextureNode.convert(image: image) {
+			self.cgImage = cgImage
+		}
+		else {
+			return nil
+		}
 		self.size = size
-		self.device = device
+		
+		super.init()
+	}
+	
+	private var initializedPipeline = false
+	
+	override func willMoveToScene(_ scene: Scene?) {
+		guard let renderView = scene?.renderView, let device = renderView.device, initializedPipeline == false else { return }
 		
 		let vertexSize = MemoryLayout<Vertex>.size
-		
 		self.vertexBuffer = device.makeBuffer(length:vertexSize * VertextCount * MaxBuffers, options: [])
 		
-		let textureLoader = MTKTextureLoader(device:device)
-		self.texture = try! textureLoader.newTexture(with: image, options: nil)
+		self.uniformsBuffer = device.makeBuffer(length: MemoryLayout<Uniforms>.size * MaxBuffers, options: [])
+		
+		if texture == nil {
+			if TextureNode.textureLoader == nil {
+				TextureNode.textureLoader = MTKTextureLoader(device: device)
+			}
+			if let textureLoader = TextureNode.textureLoader {
+				texture = try! textureLoader.newTexture(with: cgImage, options: nil)
+			}
+		}
 		
 		let samplerDescriptor = MTLSamplerDescriptor()
 		samplerDescriptor.minFilter = .linear
 		samplerDescriptor.magFilter = .linear
 		samplerDescriptor.sAddressMode = .repeat
 		samplerDescriptor.tAddressMode = .repeat
-		self.colorSamplerState = self.device.makeSamplerState(descriptor:samplerDescriptor)
+		self.colorSamplerState = device.makeSamplerState(descriptor:samplerDescriptor)
 		
 		let vertexDescriptor = MTLVertexDescriptor()
 		vertexDescriptor.attributes[0].offset = 0
@@ -119,13 +159,13 @@ class TextureNode: Node {
 		renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 		
 		self.renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
-		
-		super.init()
+		initializedPipeline = true
 	}
 	
-	let texture:MTLTexture
+	static var textureLoader:MTKTextureLoader? = nil
+	var texture:MTLTexture!
 	
-	fileprivate let device:MTLDevice
+	fileprivate var device:MTLDevice!
 	
 	var vertices:[Vertex] {
 		let rect = boundingRect
@@ -143,15 +183,17 @@ class TextureNode: Node {
 		]
 	}
 	
-	let vertexBuffer:MTLBuffer
-	let colorSamplerState: MTLSamplerState
-	let renderPipelineState: MTLRenderPipelineState
+	var vertexBuffer:MTLBuffer!
+	var uniformsBuffer:MTLBuffer!
+	var colorSamplerState: MTLSamplerState!
+	var renderPipelineState: MTLRenderPipelineState!
 	
 	override func render(with context:RenderContext) {
 		
 		let encoder = context.commandEncoder
-		var uniforms = Uniforms(modelViewProjectionMatrix: context.transform)
-		let uniformsBuffer = device.makeBuffer(bytes: &uniforms, length: MemoryLayout<Uniforms>.size, options: MTLResourceOptions())
+		let uniforms = Uniforms(modelViewProjectionMatrix: context.transform)
+		let uniformsArray = UnsafeMutablePointer<Uniforms>(OpaquePointer(uniformsBuffer.contents()))
+		uniformsArray[context.bufferIndex] = uniforms
 		
 		let vertexArray = UnsafeMutablePointer<Vertex>(OpaquePointer(vertexBuffer.contents()))
 		let vertices = self.vertices

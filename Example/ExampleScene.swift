@@ -35,7 +35,7 @@ class ExampleScene: Scene {
         rootNode.scale = CGSize(width: 2, height: 2)
         addChild(rootNode)
         
-        if let textureNode = TextureNode(renderView: renderView, image: image, size:CGSize(width:20, height:20)) {
+        if let image = image, let textureNode = TextureNode(image: image, size:CGSize(width:20, height:20)) {
             self.textureNode = textureNode
             rootNode.addChild(textureNode)
         }
