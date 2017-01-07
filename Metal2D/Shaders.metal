@@ -42,7 +42,6 @@ fragment float4 image_fragment(
                                texture2d<float, access::sample> colorTexture [[ texture(0) ]],
                                sampler colorSampler [[ sampler(0) ]]
                                ) {
-    float3 color = colorTexture.sample(colorSampler, vertexIn.texcoords).rgb;
-    return float4(color, 1);
+    return colorTexture.sample(colorSampler, vertexIn.texcoords).rgba;
 }
 
