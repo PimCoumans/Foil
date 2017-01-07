@@ -14,9 +14,11 @@ import GLKit
 #if os(iOS)
 	import UIKit
 	typealias Image = UIImage
+	typealias Color = UIColor
 #elseif os(OSX)
 	import Cocoa
 	typealias Image = NSImage
+	typealias Color = NSColor
 #endif
 
 fileprivate let VertextCount = 6
@@ -40,7 +42,7 @@ class TextureNode: Node {
 		return frame
 	}
 	
-    var image: NSImage {
+    var image: Image {
 		didSet {
 			if let cgImage = TextureNode.convert(image: image) {
 				self.cgImage = cgImage
@@ -56,6 +58,7 @@ class TextureNode: Node {
 		}
 	}
     let size: CGSize
+	var color: Color = Color.white
 	
 	private class func convert(image:Image) -> CGImage? {
 		#if os(OSX)
@@ -65,13 +68,11 @@ class TextureNode: Node {
 				}
 			}
 		#elseif os(iOS)
-			if let data = image.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
-				if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
-					if let context = CGContext(data: nil, width: image.width, height: image.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
-						context.draw(image, in: context.boundingBoxOfClipPath)
-						if let newImage = context.makeImage() {
-							return newImage
-						}
+			if let cgImage = image.cgImage {
+				if let context = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+					context.draw(cgImage, in: context.boundingBoxOfClipPath)
+					if let newImage = context.makeImage() {
+						return newImage
 					}
 				}
 			}
@@ -111,9 +112,16 @@ class TextureNode: Node {
 		guard let renderView = scene?.renderView, let device = renderView.device, initializedPipeline == false else { return }
 		
 		let vertexSize = MemoryLayout<Vertex>.size
-		self.vertexBuffer = device.makeBuffer(length:vertexSize * VertextCount * MaxBuffers, options: [])
+		vertexBuffer = device.makeBuffer(length:vertexSize * VertextCount * MaxBuffers)
+		vertexBuffer.label = "vertices"
 		
-		self.uniformsBuffer = device.makeBuffer(length: MemoryLayout<Uniforms>.size * MaxBuffers, options: [])
+		let uniformsSize = max(MemoryLayout<Uniforms>.size, 256)
+		uniformsBuffer = device.makeBuffer(length: uniformsSize * MaxBuffers)
+		uniformsBuffer.label = "uniforms"
+		
+		let colorSize = max(MemoryLayout<Float>.size * 4, 256)
+		colorBuffer = device.makeBuffer(length: colorSize * MaxBuffers)
+		colorBuffer.label = "colors"
 		
 		if texture == nil {
 			if TextureNode.textureLoader == nil {
@@ -185,15 +193,13 @@ class TextureNode: Node {
 	
 	var vertexBuffer:MTLBuffer!
 	var uniformsBuffer:MTLBuffer!
+	var colorBuffer:MTLBuffer!
 	var colorSamplerState: MTLSamplerState!
 	var renderPipelineState: MTLRenderPipelineState!
 	
 	override func render(with context:RenderContext) {
 		
 		let encoder = context.commandEncoder
-		let uniforms = Uniforms(modelViewProjectionMatrix: context.transform)
-		let uniformsArray = UnsafeMutablePointer<Uniforms>(OpaquePointer(uniformsBuffer.contents()))
-		uniformsArray[context.bufferIndex] = uniforms
 		
 		let vertexArray = UnsafeMutablePointer<Vertex>(OpaquePointer(vertexBuffer.contents()))
 		let vertices = self.vertices
@@ -202,11 +208,50 @@ class TextureNode: Node {
 			vertexArray[index] = vertices[index - vertexOffset]
 		}
 		
+		let uniforms = Uniforms(modelViewProjectionMatrix: context.transform)
+		
+		let uniformsArray = (uniformsBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Uniforms.self, capacity: 256 / MemoryLayout<Uniforms>.stride)
+		uniformsArray[0] = uniforms
+		
+		var red: CGFloat = 0
+		var green: CGFloat = 0
+		var blue: CGFloat = 0
+		var alpha: CGFloat = 0
+		
+		#if os(OSX)
+		if color.numberOfComponents < 4 {
+			let white = color.whiteComponent
+			red = white
+			green = white
+			blue = white
+			alpha = color.alphaComponent
+		}
+		else {
+			red = Float(color.redComponent)
+			green = Float(color.greenComponent)
+			blue = Float(color.blueComponent)
+			alpha = Float(color.alphaComponent)
+		}
+		#elseif os(iOS)
+			if !color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+				color.getWhite(&red, alpha: &alpha)
+				green = red
+				blue = red
+			}
+		#endif
+		
+		let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Float.self, capacity: 256 / (MemoryLayout<Float>.stride * 4))
+		componentArray[0] = Float(red)
+		componentArray[1] = Float(green)
+		componentArray[2] = Float(blue)
+		componentArray[3] = Float(alpha)
+		
 		encoder.setRenderPipelineState(renderPipelineState)
 		
 		encoder.setFrontFacing(.counterClockwise)
 		encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, at: 0)
-		encoder.setVertexBuffer(uniformsBuffer, offset: 0, at: 1)
+		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 1)
+		encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, at: 2)
 		
 		encoder.setFragmentTexture(texture, at: 0)
 		encoder.setFragmentSamplerState(colorSamplerState, at: 0)

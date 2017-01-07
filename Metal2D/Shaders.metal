@@ -39,9 +39,10 @@ vertex VertexOut image_vertex(
 fragment float4 image_fragment(
                                VertexOut vertexIn [[ stage_in ]],
                                constant Uniforms & uniforms [[ buffer(0) ]],
+                               constant float4* color [[ buffer(2) ]],
                                texture2d<float, access::sample> colorTexture [[ texture(0) ]],
                                sampler colorSampler [[ sampler(0) ]]
                                ) {
-    return colorTexture.sample(colorSampler, vertexIn.texcoords).rgba;
+    return  float4(colorTexture.sample(colorSampler, vertexIn.texcoords).rgba) * color[0];
 }
 
