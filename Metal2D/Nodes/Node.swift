@@ -23,6 +23,10 @@ class Node: Interactable {
 	var frame: CGRect {
 		return CGRect(origin: position, size: .zero)
 	}
+	
+	var bounds: CGRect {
+		return CGRect(origin: .zero, size: .zero)
+	}
     
     // MARK: Hierarchy
     fileprivate(set) var scene:Scene? {
@@ -130,7 +134,7 @@ extension Node {
 				localPosition.x *= parent.scale.width
 				localPosition.y *= parent.scale.height
 			}
-			position = CGPoint(x:position.x + localPosition.x, y:position.y + localPosition.y)
+			position += localPosition
 		}
 		return position
 	}
@@ -153,6 +157,7 @@ extension Node {
 	
 	func convert(worldPosition position:CGPoint) -> CGPoint {
 		var localPosition = position - globalPosition
+		let scale = self.globalScale
 		localPosition.x /= scale.width
 		localPosition.y /= scale.height
 		return localPosition
@@ -170,31 +175,67 @@ extension Node {
 extension Node {
 	// MARK: Node finding
 	
+	var boundingFrameOfChildren: CGRect {
+		var boundingFrame = self.frame
+		for node in children {
+			var nodeFrame = node.boundingFrameOfChildren
+			
+			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.minY) * scale.width
+			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.maxY) * scale.height
+			
+			topLeft += position
+			bottomRight += position
+			
+			nodeFrame = CGRect(x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y)			
+			
+			boundingFrame = boundingFrame.union(nodeFrame)
+		}
+		return boundingFrame
+	}
+	
 	/// Searches the reciever for nodes in it's local coordinate space
 	///
-	/// - Parameter position: position in local coordinate space
+	/// - Parameter position: position in world space
+	/// - Parameter predicate: Closure to which the node needs to comply
 	/// - Returns: lowest childNote at given point
 	
-	func node(atPosition position: CGPoint, where predicate: (Node) -> Bool) -> Node? {
-		if predicate(self) {
-			return self
+	func node(atPosition position: CGPoint, where predicate: ((Node) -> Bool)? = nil) -> Node? {
+		if children.count == 0 {
+			if let predicate = predicate {
+				var parent: Node? = self
+				while parent != nil {
+					if let parent = parent {
+//						let localPosition = parent.convert(worldPosition: position)
+						if predicate(parent) {
+							return parent
+						}
+						else {
+//							print("No likey predicate: \(parent)")
+						}
+					}
+					parent = parent?.parent
+				}
+			} else {
+				return self
+			}
+			return nil
 		}
+		
 		for node in children {
-			var localPosition = position - node.position
-			localPosition.x *= node.scale.width
-			localPosition.y *= node.scale.height
-			if let node = node.node(atPosition: localPosition, where:predicate) {
-				return node
+			let localPosition = self.convert(worldPosition: position)
+			if node.boundingFrameOfChildren.contains(localPosition) {
+				if let foundNode = node.node(atPosition: position, where: predicate) {
+					return foundNode
+				}
+			}
+			else {
+//				print("No in bounds '\(node)': \(localPosition)")
 			}
 		}
 		return nil
 	}
 	
-	func node(atPosition position: CGPoint) -> Node? {
-		return node(atPosition: position, where: { $0.frame.contains(position) })
-	}
-	
 	func interactableNode(atPosition position: CGPoint) -> Node? {
-		return node(atPosition: position, where: { $0.frame.contains(position) && $0.enabled && $0.handlesInput })
+		return node(atPosition: position, where: { $0.enabled && $0.handlesInput })
 	}
 }
