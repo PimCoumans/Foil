@@ -45,6 +45,11 @@ extension CGPoint {
     public func cosOfAngle(fromPoint point: CGPoint) -> CGFloat {
         return fmin(fmax(self * point / sqrt(self.squareLength * point.squareLength), -1.0), 1.0)
     }
+    
+    public mutating func lerp(to point: CGPoint, t:Float) {
+        let difference = point - self
+        self += (difference * CGFloat(t))
+    }
 }
 
 extension CGPoint: CustomStringConvertible {
