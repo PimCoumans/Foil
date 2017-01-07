@@ -43,40 +43,48 @@ class ExampleScene: Scene {
     
     var moveDirection = CGPoint(x: 1, y: 1)
     override func update() {
-        guard let renderView = renderView, selectedChildNode == nil else { return }
+        guard let renderView = renderView, let rootNode = children.first, selectedChildNode == nil else { return }
         
-        textureNode.position.x += moveDirection.x
-        textureNode.position.y += moveDirection.y
+        var textureNodePosition = textureNode.globalPosition
+        textureNodePosition += moveDirection
+        let convertedPosition = rootNode.convert(worldPosition: textureNodePosition)
+        textureNode.position = convertedPosition
+        
+        var cappedPosition = textureNode.globalPosition
         let boundingRect = textureNode.boundingRect
         let screenbounds = renderView.screen.bounds
         if boundingRect.maxX >= screenbounds.maxX {
-            textureNode.position.x = screenbounds.maxX - (textureNode.size.width / 2)
+            cappedPosition.x = screenbounds.maxX - (boundingRect.width / 2)
             moveDirection.x = 0 - moveDirection.x
         }
         else if boundingRect.minX <= screenbounds.minX {
-            textureNode.position.x = screenbounds.minX + (textureNode.size.width / 2)
+            cappedPosition.x = screenbounds.minX + (boundingRect.width / 2)
             moveDirection.x = 0 - moveDirection.x
         }
         
         if boundingRect.maxY >= screenbounds.maxY {
-            textureNode.position.y = screenbounds.maxY - (textureNode.size.height / 2)
+            cappedPosition.y = screenbounds.maxY - (boundingRect.height / 2)
             moveDirection.y = 0 - moveDirection.y
         }
         else if boundingRect.minY <= screenbounds.minY {
-            textureNode.position.y = screenbounds.minY + (textureNode.size.height / 2)
+            cappedPosition.y = screenbounds.minY + (boundingRect.height / 2)
             moveDirection.y = 0 - moveDirection.y
+        }
+        
+        if cappedPosition != textureNodePosition {
+            textureNode.position = rootNode.convert(worldPosition: cappedPosition)
         }
     }
     
     override func touchBegan(atPosition position: CGPoint) {
-        if let node = node(atPosition: position, where: {$0.frame.contains(position) && $0 != self}) {
+        if let node = self.node(atPosition: position) {
             selectedChildNode = node
         }
     }
     
     override func touchMoved(toPosition position: CGPoint, delta: CGPoint) {
-        if let node = selectedChildNode {
-            node.position = position
+        if let node = selectedChildNode, let parent = node.parent {
+            node.position = parent.convert(worldPosition: position)
         }
     }
     
