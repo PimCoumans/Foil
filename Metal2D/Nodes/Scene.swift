@@ -7,10 +7,19 @@
 //
 
 import Foundation
+import CoreGraphics
 
 class Scene: Node {
 	
-	weak var renderView: RenderView?
+	weak var renderView: RenderView? {
+		willSet {
+			willMoveToRenderView(renderView: newValue)
+		}
+		didSet {
+			didMoveToRenderView()
+		}
+	}
+	
 	weak var inputReceivingNode: Node? = nil
 	
 	override var handlesInput: Bool {
@@ -33,5 +42,8 @@ class Scene: Node {
 	func update() {
 		// update, with... stuff?
 	}
+	
+	func willMoveToRenderView(renderView:RenderView?) {}
+	func didMoveToRenderView() {}
 	
 }

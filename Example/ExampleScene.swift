@@ -15,18 +15,29 @@ import Cocoa
 class ExampleScene: Scene {
     var textureNode:TextureNode!
     
-    override weak var renderView: RenderView? {
-        didSet {
-            if let renderView = renderView {
-                #if os(iOS)
-                    let image = UIImage(named:"pim")
-                #elseif os(OSX)
-                    let image = NSImage(named:"pim")
-                #endif
-                renderView.screen.zoomScale = 60
-                textureNode = TextureNode(renderView: renderView, image: image, size:CGSize(width:20, height:20))
-                addChild(textureNode)
-            }
+    override func didMoveToRenderView() {
+        guard let renderView = renderView else { return }
+        #if os(iOS)
+            let image = UIImage(named:"pim")
+        #elseif os(OSX)
+            let image = NSImage(named:"pim")
+            
+            let view = DebugView()
+            view.frame = renderView.bounds
+            view.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
+            renderView.addSubview(view)
+            
+        #endif
+        renderView.screen.zoomScale = 60
+        
+        let rootNode = Node()
+        rootNode.position = CGPoint(x:30, y:30)
+        rootNode.scale = CGSize(width: 2, height: 2)
+        addChild(rootNode)
+        
+        if let textureNode = TextureNode(renderView: renderView, image: image, size:CGSize(width:20, height:20)) {
+            self.textureNode = textureNode
+            rootNode.addChild(textureNode)
         }
     }
     
