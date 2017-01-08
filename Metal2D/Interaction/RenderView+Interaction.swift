@@ -7,110 +7,113 @@
 //
 
 #if os(iOS)
-import UIKit
+	import UIKit
 #elseif os(OSX)
-import AppKit
+	import AppKit
 #endif
 
 extension RenderView {
-    
-    var pixelScale:CGFloat {
-        let screenSize = screen.bounds.size
-        let minScreenBounds = min(screenSize.width, screenSize.height)
-        let minViewSize = min(bounds.width, bounds.height)
-        return minScreenBounds / minViewSize
-    }
-    
-    func touchBegan(atPoint point: CGPoint) {
-        let worldPosition = self.worldPosition(forScreenPosition: point)
-        if let node = scene?.interactableNode(atPosition: worldPosition) {
-            scene?.inputReceivingNode = node
-            let localPosition = node.convert(worldPosition: worldPosition)
-            node.touchBegan(atPosition: localPosition)
-        }
-    }
-    
-    func touchMoved(toPoint point: CGPoint, delta:CGPoint) {
-        if let node = scene?.inputReceivingNode ?? scene {
-            let worldPosition = self.worldPosition(forScreenPosition: point)
-            let worldDelta = delta * pixelScale
-            let localPosition = node.convert(worldPosition: worldPosition)
-            let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
-            node.touchMoved(toPosition: localPosition, delta: localDelta)
-        }
-    }
-    
-    func touchEnded(atPoint point:CGPoint, delta:CGPoint) {
-        if let node = scene?.inputReceivingNode ?? scene {
-            let worldPosition = self.worldPosition(forScreenPosition: point)
-            let worldDelta = delta * pixelScale
-            let localPosition = node.convert(worldPosition: worldPosition)
-            let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
-            node.touchEnded(atPosition: localPosition, delta: localDelta)
-        }
-    }
-    
-    func touchCancelled() {
-        if let node = scene?.inputReceivingNode ?? scene {
-            node.touchCancelled()
-        }
-    }
-    
-    func worldPosition(forScreenPosition screenPosition:CGPoint) -> CGPoint {
-        var point = CGPoint(x: screenPosition.x / bounds.width, y: screenPosition.y / bounds.height)
-        point.y = 1 - point.y
-        let screenBounds = screen.bounds
-        point.x *= screenBounds.width
-        point.y *= screenBounds.height
-        point.x += screenBounds.minX
-        point.y += screenBounds.minY
-        return point
-    }
-    
-    #if os(OSX)
-    // FIXME: Use gesture recognizers instead of mouse events
-    override func mouseDown(with event: NSEvent) {
-        let location = event.locationInWindow
-        touchBegan(atPoint: location)
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        let location = event.locationInWindow
-        let delta = CGPoint(x:event.deltaX, y:event.deltaY)
-        touchMoved(toPoint: location, delta: delta)
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        let location = event.locationInWindow
-        let delta = CGPoint(x:event.deltaX, y:event.deltaY)
-        // FIXME: Delta does not work when released
-        touchEnded(atPoint: location, delta: delta)
-    }
-    #elseif os(iOS)
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        touchBegan(atPoint: touch.location(in: self))
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        let previousLocation = touch.previousLocation(in: self)
-        let delta = CGPoint(x: location.x - previousLocation.x, y: location.y - previousLocation.y)
-        touchMoved(toPoint: location, delta: delta)
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        let previousLocation = touch.previousLocation(in: self)
-        let delta = CGPoint(x: location.x - previousLocation.x, y: location.y - previousLocation.y)
-        touchEnded(atPoint: location, delta: delta)
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        touchCancelled()
-    }
-    #endif
-    
+	
+	var pixelScale:CGFloat {
+		let screenSize = screen.bounds.size
+		let minScreenBounds = min(screenSize.width, screenSize.height)
+		let minViewSize = min(bounds.width, bounds.height)
+		return minScreenBounds / minViewSize
+	}
+	
+	func touchBegan(atPoint point: CGPoint) {
+		let worldPosition = self.worldPosition(forScreenPosition: point)
+		if let node = scene?.interactableNode(atPosition: worldPosition) {
+			scene?.inputReceivingNode = node
+			let localPosition = node.convert(worldPosition: worldPosition)
+			node.touchBegan(atPosition: localPosition)
+		}
+		else {
+			scene?.touchBegan(atPosition: worldPosition)
+		}
+	}
+	
+	func touchMoved(toPoint point: CGPoint, delta:CGPoint) {
+		if let node = scene?.inputReceivingNode ?? scene {
+			let worldPosition = self.worldPosition(forScreenPosition: point)
+			let worldDelta = delta * pixelScale
+			let localPosition = node.convert(worldPosition: worldPosition)
+			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
+			node.touchMoved(toPosition: localPosition, delta: localDelta)
+		}
+	}
+	
+	func touchEnded(atPoint point:CGPoint, delta:CGPoint) {
+		if let node = scene?.inputReceivingNode ?? scene {
+			let worldPosition = self.worldPosition(forScreenPosition: point)
+			let worldDelta = delta * pixelScale
+			let localPosition = node.convert(worldPosition: worldPosition)
+			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
+			node.touchEnded(atPosition: localPosition, delta: localDelta)
+		}
+	}
+	
+	func touchCancelled() {
+		if let node = scene?.inputReceivingNode ?? scene {
+			node.touchCancelled()
+		}
+	}
+	
+	func worldPosition(forScreenPosition screenPosition:CGPoint) -> CGPoint {
+		var point = CGPoint(x: screenPosition.x / bounds.width, y: screenPosition.y / bounds.height)
+		point.y = 1 - point.y
+		let screenBounds = screen.bounds
+		point.x *= screenBounds.width
+		point.y *= screenBounds.height
+		point.x += screenBounds.minX
+		point.y += screenBounds.minY
+		return point
+	}
+	
+	#if os(OSX)
+	// FIXME: Use gesture recognizers instead of mouse events
+	override func mouseDown(with event: NSEvent) {
+		let location = event.locationInWindow
+		touchBegan(atPoint: location)
+	}
+	
+	override func mouseDragged(with event: NSEvent) {
+		let location = event.locationInWindow
+		let delta = CGPoint(x:event.deltaX, y:event.deltaY)
+		touchMoved(toPoint: location, delta: delta)
+	}
+	
+	override func mouseUp(with event: NSEvent) {
+		let location = event.locationInWindow
+		let delta = CGPoint(x:event.deltaX, y:event.deltaY)
+		// FIXME: Delta does not work when released
+		touchEnded(atPoint: location, delta: delta)
+	}
+	#elseif os(iOS)
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		guard let touch = touches.first else { return }
+		touchBegan(atPoint: touch.location(in: self))
+	}
+	
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+		guard let touch = touches.first else { return }
+		let location = touch.location(in: self)
+		let previousLocation = touch.previousLocation(in: self)
+		let delta = CGPoint(x: location.x - previousLocation.x, y: location.y - previousLocation.y)
+		touchMoved(toPoint: location, delta: delta)
+	}
+	
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		guard let touch = touches.first else { return }
+		let location = touch.location(in: self)
+		let previousLocation = touch.previousLocation(in: self)
+		let delta = CGPoint(x: location.x - previousLocation.x, y: location.y - previousLocation.y)
+		touchEnded(atPoint: location, delta: delta)
+	}
+	
+	override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+		touchCancelled()
+	}
+	#endif
+	
 }

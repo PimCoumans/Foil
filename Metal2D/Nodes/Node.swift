@@ -12,14 +12,14 @@ import GLKit
 import MetalKit
 
 class Node: Interactable {
-    
-    // MARK: Geometry
+	
+	// MARK: Geometry
 	// Position and scale are based on the parents local coordinate system
 	// If the parent has a scale of 2, this node has a scale of 1
 	// it will be rendered twice as big
-    var position = CGPoint.zero
-    var anchorPoint = CGPoint(x: 0.5, y: 0.5)
-    var scale = CGSize(width: 1, height: 1)
+	var position = CGPoint.zero
+	var anchorPoint = CGPoint(x: 0.5, y: 0.5)
+	var scale = CGSize(width: 1, height: 1)
 	var frame: CGRect {
 		return CGRect(origin: position, size: .zero)
 	}
@@ -27,68 +27,68 @@ class Node: Interactable {
 	var bounds: CGRect {
 		return CGRect(origin: .zero, size: .zero)
 	}
-    
-    // MARK: Hierarchy
-    fileprivate(set) var scene:Scene? {
-        willSet {
-            willMoveToScene(newValue)
-        }
-        didSet {
-            didMoveToScene()
-            for node in children {
-                node.scene = scene
-            }
-        }
-    }
-    fileprivate(set) weak var parent:Node? {
-        willSet { willMoveToParent(newValue) }
-        didSet { didMoveToParent() }
-    }
-    fileprivate(set) var children = [Node]()
-    
-    let uid:Int
+	
+	// MARK: Hierarchy
+	fileprivate(set) var scene:Scene? {
+		willSet {
+			willMoveToScene(newValue)
+		}
+		didSet {
+			didMoveToScene()
+			for node in children {
+				node.scene = scene
+			}
+		}
+	}
+	fileprivate(set) weak var parent:Node? {
+		willSet { willMoveToParent(newValue) }
+		didSet { didMoveToParent() }
+	}
+	fileprivate(set) var children = [Node]()
+	
+	let uid:Int
 	init() {
-        uid = Node.nextUid()
-    }
-    
-    func addChild(_ node:Node) {
-        assert(!children.contains(node))
-        children.append(node)
-        node.parent = self
-        if let scene = self as? Scene {
-            node.scene = scene
-        } else {
-            node.scene = scene
-        }
-    }
-    
-    func removeFromParent() {
-        guard let parent = parent,
-        let index = parent.children.index(of: self) else {
-            return
-        }
-        parent.children.remove(at: index)
-        self.parent = nil
-        self.scene = nil
-    }
-    
-    // MARK: Updates
-    func willMoveToParent(_ parent:Node?) {}
-    func didMoveToParent() {}
-    func willMoveToScene(_ scene:Scene?) {}
-    func didMoveToScene() {}
-    
-    // MARK: Rendering
+		uid = Node.nextUid()
+	}
+	
+	func addChild(_ node:Node) {
+		assert(!children.contains(node))
+		children.append(node)
+		node.parent = self
+		if let scene = self as? Scene {
+			node.scene = scene
+		} else {
+			node.scene = scene
+		}
+	}
+	
+	func removeFromParent() {
+		guard let parent = parent,
+			let index = parent.children.index(of: self) else {
+				return
+		}
+		parent.children.remove(at: index)
+		self.parent = nil
+		self.scene = nil
+	}
+	
+	// MARK: Updates
+	func willMoveToParent(_ parent:Node?) {}
+	func didMoveToParent() {}
+	func willMoveToScene(_ scene:Scene?) {}
+	func didMoveToScene() {}
+	
+	// MARK: Rendering
 	func render(with context:RenderContext) {
-        
-    }
-    
+		
+	}
+	
 	func renderRecursively(with context:RenderContext) {
-        render(with: context)
-        for node in children {
+		render(with: context)
+		for node in children {
 			node.renderRecursively(with:context)
-        }
-    }
+		}
+	}
 	
 	// MARK: Interactable
 	var handlesInput: Bool { return false }
@@ -107,20 +107,20 @@ class Node: Interactable {
 }
 
 extension Node: Hashable {
-    
-    fileprivate static var uid = 1
-    fileprivate static func nextUid() -> Int {
-        uid += 1
-        return uid
-    }
-    
-    var hashValue: Int {
-        return uid
-    }
-    
-    public static func ==(lhs: Node, rhs: Node) -> Bool {
-        return lhs.hashValue == rhs.hashValue
-    }
+	
+	fileprivate static var uid = 1
+	fileprivate static func nextUid() -> Int {
+		uid += 1
+		return uid
+	}
+	
+	var hashValue: Int {
+		return uid
+	}
+	
+	public static func ==(lhs: Node, rhs: Node) -> Bool {
+		return lhs.hashValue == rhs.hashValue
+	}
 }
 
 extension Node {
@@ -186,7 +186,7 @@ extension Node {
 			topLeft += position
 			bottomRight += position
 			
-			nodeFrame = CGRect(x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y)			
+			nodeFrame = CGRect(x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y)
 			
 			boundingFrame = boundingFrame.union(nodeFrame)
 		}
@@ -200,25 +200,26 @@ extension Node {
 	/// - Returns: lowest childNote at given point
 	
 	func node(atPosition position: CGPoint, where predicate: ((Node) -> Bool)? = nil) -> Node? {
-		if children.count == 0 {
+		
+		func sortPredicate(withNode node: Node, predicate: ((Node) -> Bool)?) -> Node? {
 			if let predicate = predicate {
-				var parent: Node? = self
+				var parent: Node? = node
 				while parent != nil {
 					if let parent = parent {
-//						let localPosition = parent.convert(worldPosition: position)
 						if predicate(parent) {
 							return parent
-						}
-						else {
-//							print("No likey predicate: \(parent)")
 						}
 					}
 					parent = parent?.parent
 				}
+				return nil
 			} else {
 				return self
 			}
-			return nil
+		}
+		
+		if children.count == 0 {
+			return sortPredicate(withNode: self, predicate: predicate)
 		}
 		
 		for node in children {
@@ -226,10 +227,9 @@ extension Node {
 			if node.boundingFrameOfChildren.contains(localPosition) {
 				if let foundNode = node.node(atPosition: position, where: predicate) {
 					return foundNode
+				} else {
+					return sortPredicate(withNode: node, predicate: predicate)
 				}
-			}
-			else {
-//				print("No in bounds '\(node)': \(localPosition)")
 			}
 		}
 		return nil

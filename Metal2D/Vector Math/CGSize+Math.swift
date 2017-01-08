@@ -9,83 +9,83 @@
 import CoreGraphics
 
 extension CGSize {
-    public func nearlyEqual(toPoint point: CGSize, epsilon: CGFloat) -> Bool {
-        let difference = self - point
-        return fabs(difference.width) < epsilon && fabs(difference.height) < epsilon
-    }
-    
-    public mutating func lerp(to size: CGSize, t:Float) {
-        let difference = size - self
-        self += (difference * CGFloat(t))
-    }
+	public func nearlyEqual(toPoint point: CGSize, epsilon: CGFloat) -> Bool {
+		let difference = self - point
+		return fabs(difference.width) < epsilon && fabs(difference.height) < epsilon
+	}
+	
+	public mutating func lerp(to size: CGSize, t:Float) {
+		let difference = size - self
+		self += (difference * CGFloat(t))
+	}
 }
 
 extension CGSize: CustomStringConvertible {
-    public var description: String {
-        return "(\(width), \(height))"
-    }
+	public var description: String {
+		return "(\(width), \(height))"
+	}
 }
 
 public prefix func + (value: CGSize) -> CGSize {
-    return value
+	return value
 }
 
 public prefix func - (value: CGSize) -> CGSize {
-    return CGSize(width: -value.width, height: -value.height)
+	return CGSize(width: -value.width, height: -value.height)
 }
 
 public func + (left: CGSize, right: CGSize) -> CGSize {
-    return CGSize(width: left.width + right.width, height: left.height + right.height)
+	return CGSize(width: left.width + right.width, height: left.height + right.height)
 }
 
 public func - (left: CGSize, right: CGSize) -> CGSize {
-    return CGSize(width: left.width - right.width, height: left.height - right.height)
+	return CGSize(width: left.width - right.width, height: left.height - right.height)
 }
 
 public func * (left: CGSize, right: CGAffineTransform) -> CGSize {
-    return left.applying(right)
+	return left.applying(right)
 }
 
 public func * (left: CGSize, right: CGFloat) -> CGSize {
-    return CGSize(width: left.width * right, height: left.height * right)
+	return CGSize(width: left.width * right, height: left.height * right)
 }
 
 public func * (left: CGFloat, right: CGSize) -> CGSize {
-    return CGSize(width: right.width * left, height: right.height * left)
+	return CGSize(width: right.width * left, height: right.height * left)
 }
 
 public func / (left: CGSize, right: CGFloat) -> CGSize {
-    return CGSize(width: left.width / right, height: left.height / right)
+	return CGSize(width: left.width / right, height: left.height / right)
 }
 
 public func += ( left: inout CGSize, right: CGSize) {
-    left = left + right
+	left = left + right
 }
 
 public func -= ( left: inout CGSize, right: CGSize) {
-    left = left - right
+	left = left - right
 }
 
 public func *= ( left: inout CGSize, right: CGFloat) {
-    left = left * right
+	left = left * right
 }
 
 public func /= ( left: inout CGSize, right: CGFloat) {
-    left = left / right
+	left = left / right
 }
 
 public func + (left: CGPoint, right: CGSize) -> CGPoint {
-    return CGPoint(x: left.x + right.width, y: left.y + right.height)
+	return CGPoint(x: left.x + right.width, y: left.y + right.height)
 }
 
 public func + (left: CGSize, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.width + right.x, y: left.height + right.y)
+	return CGPoint(x: left.width + right.x, y: left.height + right.y)
 }
 
 public func - (left: CGPoint, right: CGSize) -> CGPoint {
-    return CGPoint(x: left.x - right.width, y: left.y - right.height)
+	return CGPoint(x: left.x - right.width, y: left.y - right.height)
 }
 
 public func - (left: CGSize, right: CGPoint) -> CGPoint {
-    return CGPoint(x: left.width - right.x, y: left.height - right.y)
+	return CGPoint(x: left.width - right.x, y: left.height - right.y)
 }

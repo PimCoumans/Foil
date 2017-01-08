@@ -42,7 +42,7 @@ class TextureNode: Node {
 		return frame
 	}
 	
-    var image: Image {
+	var image: Image {
 		didSet {
 			if let cgImage = TextureNode.convert(image: image) {
 				self.cgImage = cgImage
@@ -57,7 +57,7 @@ class TextureNode: Node {
 			}
 		}
 	}
-    let size: CGSize
+	let size: CGSize
 	var color: Color = Color.white
 	
 	private class func convert(image:Image) -> CGImage? {
@@ -81,16 +81,16 @@ class TextureNode: Node {
 	}
 	
 	// Coordinates in global space
-    var boundingRect: CGRect {
-        var rect = CGRect()
-        rect.origin = globalPosition
+	var boundingRect: CGRect {
+		var rect = CGRect()
+		rect.origin = globalPosition
 		let scale = globalScale
 		let scaledSize = CGSize(width: size.width * scale.width, height: size.height * scale.height)
-        rect.origin.x -= scaledSize.width * anchorPoint.x
-        rect.origin.y -= scaledSize.height * anchorPoint.y
-        rect.size = scaledSize
-        return rect
-    }
+		rect.origin.x -= scaledSize.width * anchorPoint.x
+		rect.origin.y -= scaledSize.height * anchorPoint.y
+		rect.size = scaledSize
+		return rect
+	}
 	
 	init?(image:Image, size:CGSize) {
 		
@@ -219,19 +219,19 @@ class TextureNode: Node {
 		var alpha: CGFloat = 0
 		
 		#if os(OSX)
-		if color.numberOfComponents < 4 {
-			let white = color.whiteComponent
-			red = white
-			green = white
-			blue = white
-			alpha = color.alphaComponent
-		}
-		else {
-			red = color.redComponent
-			green = color.greenComponent
-			blue = color.blueComponent
-			alpha = color.alphaComponent
-		}
+			if color.numberOfComponents < 4 {
+				let white = color.whiteComponent
+				red = white
+				green = white
+				blue = white
+				alpha = color.alphaComponent
+			}
+			else {
+				red = color.redComponent
+				green = color.greenComponent
+				blue = color.blueComponent
+				alpha = color.alphaComponent
+			}
 		#elseif os(iOS)
 			if !color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
 				color.getWhite(&red, alpha: &alpha)
@@ -257,5 +257,5 @@ class TextureNode: Node {
 		encoder.setFragmentSamplerState(colorSamplerState, at: 0)
 		
 		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: VertextCount)
-    }
+	}
 }

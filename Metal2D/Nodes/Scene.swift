@@ -23,8 +23,6 @@ class Scene: Node {
 	weak var inputReceivingNode: Node? = nil
 	
 	override var handlesInput: Bool {
-		// By default, all touch input events are captured by
-		// the scene. If false is returned, the next node is searched
 		return true
 	}
 	
