@@ -199,6 +199,10 @@ class TextureNode: Node {
 	
 	override func render(with context:RenderContext) {
 		
+		guard initializedPipeline else {
+			return
+		}
+		
 		let encoder = context.commandEncoder
 		
 		let vertexArray = UnsafeMutablePointer<Vertex>(OpaquePointer(vertexBuffer.contents()))
