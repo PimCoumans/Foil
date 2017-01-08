@@ -91,12 +91,7 @@ class RenderView: MTKView, MTKViewDelegate {
 			let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			
 			let screenBounds = screen.bounds
-			#if os(iOS)
-				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
-			#elseif os(OSX)
-				// Flip coordinates for Mac
-				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
-			#endif
+			let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
 			
 			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex)
 			
