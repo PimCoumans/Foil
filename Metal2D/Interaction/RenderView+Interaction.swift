@@ -50,6 +50,7 @@ extension RenderView {
 			let localPosition = node.convert(worldPosition: worldPosition)
 			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
 			node.touchEnded(atPosition: localPosition, delta: localDelta)
+			scene?.inputReceivingNode = nil
 		}
 	}
 	
@@ -57,6 +58,7 @@ extension RenderView {
 		if let node = scene?.inputReceivingNode ?? scene {
 			node.touchCancelled()
 		}
+		scene?.inputReceivingNode = nil
 	}
 	
 	func worldPosition(forScreenPosition screenPosition:CGPoint) -> CGPoint {
