@@ -227,10 +227,10 @@ class TextureNode: Node {
 			alpha = color.alphaComponent
 		}
 		else {
-			red = Float(color.redComponent)
-			green = Float(color.greenComponent)
-			blue = Float(color.blueComponent)
-			alpha = Float(color.alphaComponent)
+			red = color.redComponent
+			green = color.greenComponent
+			blue = color.blueComponent
+			alpha = color.alphaComponent
 		}
 		#elseif os(iOS)
 			if !color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
