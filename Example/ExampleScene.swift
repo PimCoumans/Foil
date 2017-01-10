@@ -22,11 +22,6 @@ class ExampleScene: Scene {
 		#elseif os(OSX)
 			let image = NSImage(named:"pim")
 			
-			let view = DebugView()
-			view.frame = renderView.bounds
-			view.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
-			renderView.addSubview(view)
-			
 		#endif
 		renderView.screen.zoomScale = 60
 		
@@ -46,7 +41,7 @@ class ExampleScene: Scene {
 		guard let renderView = renderView, let rootNode = children.first, selectedChildNode == nil else { return }
 		
 		var textureNodePosition = textureNode.globalPosition
-		textureNodePosition += (moveDirection * 60 / context.delta)
+		textureNodePosition += (moveDirection * CGFloat(60 * context.delta))
 		let convertedPosition = rootNode.convert(worldPosition: textureNodePosition)
 		textureNode.position = convertedPosition
 		
