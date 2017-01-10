@@ -63,14 +63,10 @@ extension RenderView {
 	
 	func worldPosition(forScreenPosition screenPosition:CGPoint) -> CGPoint {
 		var point = CGPoint(x: screenPosition.x / bounds.width, y: screenPosition.y / bounds.height)
-		#if os(OSX)
-		point.y = 1 - point.y
-		#endif
 		let screenBounds = screen.bounds
 		point.x *= screenBounds.width
 		point.y *= screenBounds.height
-		point.x += screenBounds.minX
-		point.y += screenBounds.minY
+		point += screenBounds.origin
 		return point
 	}
 	

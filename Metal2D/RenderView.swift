@@ -10,7 +10,6 @@ import MetalKit
 import GLKit
 
 let MaxBuffers = 3
-let ConstantBufferSize = 1024*1024
 
 struct RenderContext {
 	fileprivate(set) var commandEncoder: MTLRenderCommandEncoder
@@ -106,7 +105,11 @@ class RenderView: MTKView, MTKViewDelegate {
 			let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			
 			let screenBounds = screen.bounds
-			let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
+			#if os(OSX)
+				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
+			#elseif os(iOS)
+				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
+			#endif
 			
 			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex, delta:delta)
 			

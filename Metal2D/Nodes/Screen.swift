@@ -29,8 +29,9 @@ class Screen {
 		var rect = CGRect(origin: .zero, size: screenRatio)
 		rect.size.width *= zoomScale * 2
 		rect.size.height *= zoomScale * 2
-		rect.origin.x = -(rect.width / 2) + offset.x
-		rect.origin.y = -(rect.height / 2) + offset.y
+		rect.origin.x = -(rect.width / 2)
+		rect.origin.y = -(rect.height / 2)
+		rect.origin += offset
 		return rect
 	}
 	

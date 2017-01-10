@@ -36,9 +36,9 @@ class TextureNode: Node {
 	override var frame: CGRect {
 		var frame = CGRect(origin: position, size: size)
 		frame.size.width *= scale.width
-		frame.size.height *= scale.height
+		frame.size.height *= -scale.height
 		frame.origin.x -= frame.width * anchorPoint.x
-		frame.origin.y -= frame.height * anchorPoint.y
+		frame.origin.y += frame.height * anchorPoint.y
 		return frame
 	}
 	
@@ -85,7 +85,7 @@ class TextureNode: Node {
 		var rect = CGRect()
 		rect.origin = globalPosition
 		let scale = globalScale
-		let scaledSize = CGSize(width: size.width * scale.width, height: size.height * scale.height)
+		let scaledSize = CGSize(width: size.width * scale.width, height: -size.height * scale.height)
 		rect.origin.x -= scaledSize.width * anchorPoint.x
 		rect.origin.y -= scaledSize.height * anchorPoint.y
 		rect.size = scaledSize
@@ -179,8 +179,8 @@ class TextureNode: Node {
 		let rect = boundingRect
 		let l = Float(rect.minX)
 		let r = Float(rect.maxX)
-		let t = Float(rect.minY)
-		let b = Float(rect.maxY)
+		let t = Float(rect.maxY)
+		let b = Float(rect.minY)
 		return [
 			Vertex(x: l, y: t, z: 0, w: 1, u: 0, v: 1),
 			Vertex(x: l, y: b, z: 0, w: 1, u: 0, v: 0),
@@ -252,7 +252,6 @@ class TextureNode: Node {
 		
 		encoder.setRenderPipelineState(renderPipelineState)
 		
-		encoder.setFrontFacing(.counterClockwise)
 		encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, at: 0)
 		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 1)
 		encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, at: 2)
