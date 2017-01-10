@@ -37,7 +37,7 @@ class Scene: Node {
 		touchCancelled()
 	}
 	
-	func update() {
+	func update(withContext context:RenderContext) {
 		// update, with... stuff?
 	}
 	

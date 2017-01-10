@@ -13,9 +13,10 @@ let MaxBuffers = 3
 let ConstantBufferSize = 1024*1024
 
 struct RenderContext {
-	fileprivate(set) var commandEncoder:MTLRenderCommandEncoder
-	fileprivate(set) var transform:GLKMatrix4
-	fileprivate(set) var bufferIndex:Int
+	fileprivate(set) var commandEncoder: MTLRenderCommandEncoder
+	fileprivate(set) var transform: GLKMatrix4
+	fileprivate(set) var bufferIndex: Int
+	fileprivate(set) var delta: Double
 }
 
 class RenderView: MTKView, MTKViewDelegate {
@@ -61,12 +62,16 @@ class RenderView: MTKView, MTKViewDelegate {
 		screen = Screen(renderView: self)
 		renderBlock = { [weak self] context in
 			if let scene = self?.scene {
-				scene.update()
+				scene.update(withContext: context)
 				scene.renderRecursively(with: context)
 			}
 		}
 		delegate = self
 	}
+	
+	var lastTime: CFAbsoluteTime = 0
+	var currentTime: CFAbsoluteTime = 0
+	var delta: Double = 0
 	
 	func draw(in view: MTKView) {
 		// TODO: use timing signatures for rendering ahead
@@ -81,6 +86,16 @@ class RenderView: MTKView, MTKViewDelegate {
 			return
 		}
 		
+		if bufferIndex == 0 {
+			if currentTime == 0 {
+				currentTime = CFAbsoluteTimeGetCurrent()
+			}
+			lastTime = currentTime
+			currentTime = CFAbsoluteTimeGetCurrent()
+			let totalDelta = currentTime - lastTime
+			delta = Double(totalDelta / Double(MaxBuffers))
+		}
+		
 		if let renderPassDescriptor = view.currentRenderPassDescriptor, let drawable = view.currentDrawable {
 			
 			renderPassDescriptor.colorAttachments[0].texture = drawable.texture
@@ -93,7 +108,7 @@ class RenderView: MTKView, MTKViewDelegate {
 			let screenBounds = screen.bounds
 			let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
 			
-			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex)
+			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex, delta:delta)
 			
 			renderBlock?(renderContext)
 			
@@ -103,7 +118,6 @@ class RenderView: MTKView, MTKViewDelegate {
 		
 		// bufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
 		bufferIndex = (bufferIndex + 1) % MaxBuffers
-		
 		commandBuffer.commit()
 	}
 	
