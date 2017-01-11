@@ -20,6 +20,10 @@ struct VertexOut {
 	float2 texcoords;
 };
 
+struct VertexInOut {
+	float4 position [[ position ]];
+};
+
 struct Uniforms {
 	float4x4 modelViewProjectionMatrix;
 };
@@ -46,3 +50,20 @@ fragment float4 image_fragment(
 	return  float4(colorTexture.sample(colorSampler, vertexIn.texcoords).rgba) * color[0];
 }
 
+
+
+vertex VertexInOut line_vertex(uint vid [[ vertex_id ]],
+							   constant packed_float4* position  [[ buffer(0) ]],
+							   constant Uniforms & uniforms [[ buffer(1) ]])
+{
+	VertexInOut outVertex;
+	
+	outVertex.position = uniforms.modelViewProjectionMatrix * float4(position[vid]);
+	
+	return outVertex;
+};
+
+fragment half4 line_fragment(VertexInOut inFrag [[stage_in]])
+{
+	return half4(1, 1, 1, 1);
+};

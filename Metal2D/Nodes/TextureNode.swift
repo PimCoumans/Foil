@@ -22,6 +22,12 @@ import GLKit
 #endif
 
 fileprivate let VertextCount = 6
+#if os(iOS)
+fileprivate let BufferMinLength = 256
+#elseif os(OSX)
+fileprivate let BufferMinLength = 4
+#endif
+// TODO: only cap buffer length on iOS
 
 class TextureNode: Node {
 	
