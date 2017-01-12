@@ -14,15 +14,9 @@ extension CGSize {
 		return fabs(difference.width) < epsilon && fabs(difference.height) < epsilon
 	}
 	
-	public mutating func lerp(to size: CGSize, t:Float) {
+	public mutating func lerp(to size: CGSize, t: Double) {
 		let difference = size - self
 		self += (difference * CGFloat(t))
-	}
-}
-
-extension CGSize: CustomStringConvertible {
-	public var description: String {
-		return "(\(width), \(height))"
 	}
 }
 

@@ -21,7 +21,9 @@ class Node: Interactable {
 	var anchorPoint = CGPoint(x: 0.5, y: 0.5)
 	var scale = CGSize(width: 1, height: 1)
 	var frame: CGRect {
-		return CGRect(origin: position, size: .zero)
+		var frame = bounds
+		frame.origin += position
+		return frame
 	}
 	
 	var bounds: CGRect {

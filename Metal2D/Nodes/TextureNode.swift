@@ -22,6 +22,12 @@ import GLKit
 #endif
 
 fileprivate let VertextCount = 6
+#if os(iOS)
+fileprivate let BufferMinLength = 256
+#elseif os(OSX)
+fileprivate let BufferMinLength = 4
+#endif
+// TODO: only cap buffer length on iOS
 
 class TextureNode: Node {
 	
@@ -37,6 +43,13 @@ class TextureNode: Node {
 		var frame = CGRect(origin: position, size: size)
 		frame.size.width *= scale.width
 		frame.size.height *= -scale.height
+		frame.origin.x -= frame.width * anchorPoint.x
+		frame.origin.y += frame.height * anchorPoint.y
+		return frame
+	}
+	
+	override var bounds: CGRect {
+		var frame = CGRect(origin: .zero, size: size)
 		frame.origin.x -= frame.width * anchorPoint.x
 		frame.origin.y += frame.height * anchorPoint.y
 		return frame
@@ -70,6 +83,8 @@ class TextureNode: Node {
 		#elseif os(iOS)
 			if let cgImage = image.cgImage {
 				if let context = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+					context.scaleBy(x: 1, y: -1)
+					context.translateBy(x: 0, y: CGFloat(cgImage.height))
 					context.draw(cgImage, in: context.boundingBoxOfClipPath)
 					if let newImage = context.makeImage() {
 						return newImage

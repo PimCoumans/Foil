@@ -73,7 +73,6 @@ class RenderView: MTKView, MTKViewDelegate {
 	var delta: Double = 0
 	
 	func draw(in view: MTKView) {
-		// TODO: use timing signatures for rendering ahead
 		let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
 		
 		let commandBuffer = commandQueue.makeCommandBuffer()
@@ -92,7 +91,7 @@ class RenderView: MTKView, MTKViewDelegate {
 			lastTime = currentTime
 			currentTime = CFAbsoluteTimeGetCurrent()
 			let totalDelta = currentTime - lastTime
-			delta = Double(totalDelta / Double(MaxBuffers))
+			delta = min(Double(totalDelta / Double(MaxBuffers)), 0.035)
 		}
 		
 		if let renderPassDescriptor = view.currentRenderPassDescriptor, let drawable = view.currentDrawable {
@@ -105,11 +104,7 @@ class RenderView: MTKView, MTKViewDelegate {
 			let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			
 			let screenBounds = screen.bounds
-			#if os(OSX)
-				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
-			#elseif os(iOS)
-				let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.maxY), Float(screenBounds.minY), -1, 1)
-			#endif
+			let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
 			
 			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex, delta:delta)
 			
@@ -133,7 +128,7 @@ class RenderView: MTKView, MTKViewDelegate {
 	
 	#if os(macOS)
 	override var isFlipped: Bool {
-		return false
+		return true
 	}
 	#endif
 	
