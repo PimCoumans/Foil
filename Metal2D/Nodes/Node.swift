@@ -185,6 +185,8 @@ extension Node {
 			guard !node.hidden else { continue }
 			var nodeFrame = node.boundingFrameOfChildren
 			
+			guard !nodeFrame.isNull && !nodeFrame.isInfinite else { continue }
+			
 			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.minY) * scale.width
 			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.maxY) * scale.height
 			
