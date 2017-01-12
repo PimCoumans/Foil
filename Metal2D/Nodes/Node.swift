@@ -203,7 +203,7 @@ extension Node {
 	
 	func node(atPosition position: CGPoint, where predicate: ((Node) -> Bool)? = nil) -> Node? {
 		
-		func sortPredicate(withNode node: Node, predicate: ((Node) -> Bool)?) -> Node? {
+		func applyPredicate(withNode node: Node, predicate: ((Node) -> Bool)?) -> Node? {
 			if let predicate = predicate {
 				var parent: Node? = node
 				while parent != nil {
@@ -221,7 +221,7 @@ extension Node {
 		}
 		
 		if children.count == 0 {
-			return sortPredicate(withNode: self, predicate: predicate)
+			return applyPredicate(withNode: self, predicate: predicate)
 		}
 		
 		for node in children {
@@ -229,8 +229,8 @@ extension Node {
 			if node.boundingFrameOfChildren.contains(localPosition) {
 				if let foundNode = node.node(atPosition: position, where: predicate) {
 					return foundNode
-				} else {
-					return sortPredicate(withNode: node, predicate: predicate)
+				} else if let foundNode = applyPredicate(withNode: node, predicate: predicate) {
+					return foundNode
 				}
 			}
 		}
