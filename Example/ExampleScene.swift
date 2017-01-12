@@ -14,6 +14,7 @@
 
 class ExampleScene: Scene {
 	var textureNode:TextureNode!
+	var lineNode:LineNode!
 	
 	override func didMoveToRenderView() {
 		guard let renderView = renderView else { return }
@@ -27,13 +28,16 @@ class ExampleScene: Scene {
 		
 		let rootNode = Node()
 		rootNode.position = CGPoint(x:30, y:30)
-		rootNode.scale = CGSize(width: 2, height: 2)
+		rootNode.scale = CGSize(width: 10, height: 10)
 		addChild(rootNode)
 		
-		if let image = image, let textureNode = TextureNode(image: image, size:CGSize(width:20, height:20)) {
+		if let image = image, let textureNode = TextureNode(image: image, size:CGSize(width:2, height:2)) {
 			self.textureNode = textureNode
 			rootNode.addChild(textureNode)
 		}
+		
+		lineNode = LineNode()
+		rootNode.addChild(lineNode)
 	}
 	
 	var moveDirection = CGPoint(x: 1, y: 1)
@@ -69,6 +73,7 @@ class ExampleScene: Scene {
 		if cappedPosition != textureNodePosition {
 			textureNode.position = rootNode.convert(worldPosition: cappedPosition)
 		}
+		lineNode.points[1] = textureNode.position
 	}
 	
 	override func touchBegan(atPosition position: CGPoint) {
@@ -80,6 +85,7 @@ class ExampleScene: Scene {
 	override func touchMoved(toPosition position: CGPoint, delta: CGPoint) {
 		if let node = selectedChildNode, let parent = node.parent {
 			node.position = parent.convert(worldPosition: position)
+			lineNode.points[1] = textureNode.position
 		}
 	}
 	
