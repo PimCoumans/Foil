@@ -86,6 +86,7 @@ class Node: Interactable {
 	}
 	
 	func renderRecursively(with context:RenderContext) {
+		guard !hidden else { return }
 		render(with: context)
 		for node in children {
 			node.renderRecursively(with:context)
@@ -96,6 +97,7 @@ class Node: Interactable {
 	var handlesInput: Bool { return false }
 	
 	var enabled: Bool = true
+	var hidden: Bool = false
 	var highlighted: Bool = false
 	var selected: Bool = false
 	
@@ -180,6 +182,7 @@ extension Node {
 	var boundingFrameOfChildren: CGRect {
 		var boundingFrame = self.frame
 		for node in children {
+			guard !node.hidden else { continue }
 			var nodeFrame = node.boundingFrameOfChildren
 			
 			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.minY) * scale.width
