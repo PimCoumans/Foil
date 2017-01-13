@@ -47,6 +47,13 @@ extension CGPoint {
 	}
 	
 	public mutating func lerp(to point: CGPoint, t: Double) {
+		if self == point {
+			return
+		}
+		else if distance(fromPoint: point) < 0.001 {
+			self = point
+			return
+		}
 		let difference = point - self
 		self += (difference * CGFloat(t))
 	}
