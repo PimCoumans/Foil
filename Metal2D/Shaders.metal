@@ -65,5 +65,5 @@ vertex VertexInOut line_vertex(uint vid [[ vertex_id ]],
 
 fragment half4 line_fragment(VertexInOut inFrag [[stage_in]])
 {
-	return half4(1, 1, 1, 1);
+	return half4(0, 0, 0, 0.65);
 };
