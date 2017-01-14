@@ -32,6 +32,7 @@ class ExampleScene: Scene {
 		addChild(rootNode)
 		
 		if let image = image, let textureNode = TextureNode(image: image, size:CGSize(width:2, height:2)) {
+			textureNode.position = CGPoint(x: 20, y: 20)
 			self.textureNode = textureNode
 			rootNode.addChild(textureNode)
 		}
@@ -42,6 +43,9 @@ class ExampleScene: Scene {
 	
 	var moveDirection = CGPoint(x: 1, y: 1)
 	override func update(withContext context:RenderContext) {
+		
+		textureNode.rotation += 0.02
+		
 		guard let renderView = renderView, let rootNode = children.first, selectedChildNode == nil else { return }
 		
 		var textureNodePosition = textureNode.globalPosition
