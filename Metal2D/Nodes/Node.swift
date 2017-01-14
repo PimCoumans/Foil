@@ -151,6 +151,18 @@ extension Node {
 		return scale
 	}
 	
+	var globalFrame: CGRect {
+		let bounds = self.bounds
+		var rect = CGRect()
+		rect.origin = globalPosition
+		let scale = globalScale
+		let scaledSize = CGSize(width: bounds.width * scale.width, height: -bounds.height * scale.height)
+		rect.origin.x -= scaledSize.width * anchorPoint.x
+		rect.size = scaledSize
+		rect.origin.y -= scaledSize.height * anchorPoint.y
+		return rect
+	}
+	
 	func enumerateUp(using block: @escaping(_ parent:Node)->()) {
 		var node:Node? = self
 		while let currentNode = node {

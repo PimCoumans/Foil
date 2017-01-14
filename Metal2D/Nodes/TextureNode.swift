@@ -95,18 +95,6 @@ class TextureNode: Node {
 		return nil
 	}
 	
-	// Coordinates in global space
-	var boundingRect: CGRect {
-		var rect = CGRect()
-		rect.origin = globalPosition
-		let scale = globalScale
-		let scaledSize = CGSize(width: size.width * scale.width, height: -size.height * scale.height)
-		rect.origin.x -= scaledSize.width * anchorPoint.x
-		rect.origin.y -= scaledSize.height * anchorPoint.y
-		rect.size = scaledSize
-		return rect
-	}
-	
 	init?(image:Image, size:CGSize) {
 		
 		self.image = image

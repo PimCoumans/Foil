@@ -50,7 +50,7 @@ class ExampleScene: Scene {
 		textureNode.position = convertedPosition
 		
 		var cappedPosition = textureNode.globalPosition
-		let boundingRect = textureNode.boundingRect
+		let boundingRect = textureNode.globalFrame
 		let screenbounds = renderView.screen.bounds
 		if boundingRect.maxX >= screenbounds.maxX {
 			cappedPosition.x = screenbounds.maxX - (boundingRect.width / 2)
