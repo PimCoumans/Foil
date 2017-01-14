@@ -101,6 +101,18 @@ class Node: Interactable {
 	var highlighted: Bool = false
 	var selected: Bool = false
 	
+	var rotation: CGFloat = 0
+	var transform: CGAffineTransform {
+		let boundingRect = globalFrame
+		var center = boundingRect.origin
+		center.x += boundingRect.width * anchorPoint.x
+		center.y += boundingRect.height * -anchorPoint.y
+		
+		return CGAffineTransform(translationX: center.x, y: center.y)
+			.rotated(by: rotation)
+			.translatedBy(x: -center.x, y: -center.y)
+	}
+	
 	var highlightedChildNode: Node? = nil
 	var selectedChildNode: Node? = nil
 	
@@ -161,6 +173,22 @@ extension Node {
 		rect.size = scaledSize
 		rect.origin.y -= scaledSize.height * anchorPoint.y
 		return rect
+	}
+	
+	var globalRotation: CGFloat {
+		var rotation: CGFloat = 0
+		enumerateUp { node in
+			rotation += node.rotation
+		}
+		return rotation
+	}
+	
+	var globalTransform: CGAffineTransform {
+		var transform = CGAffineTransform.identity
+		enumerateUp { node in
+			transform = transform.concatenating(node.transform)
+		}
+		return transform
 	}
 	
 	func enumerateUp(using block: @escaping(_ parent:Node)->()) {
