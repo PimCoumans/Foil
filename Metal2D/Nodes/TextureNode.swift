@@ -179,19 +179,39 @@ class TextureNode: Node {
 	fileprivate var device:MTLDevice!
 	
 	var vertices:[Vertex] {
-		let rect = boundingRect
-		let l = Float(rect.minX)
-		let r = Float(rect.maxX)
-		let t = Float(rect.maxY)
-		let b = Float(rect.minY)
-		return [
-			Vertex(x: l, y: t, z: 0, w: 1, u: 0, v: 1),
-			Vertex(x: l, y: b, z: 0, w: 1, u: 0, v: 0),
-			Vertex(x: r, y: b, z: 0, w: 1, u: 1, v: 0),
-			Vertex(x: l, y: t, z: 0, w: 1, u: 0, v: 1),
-			Vertex(x: r, y: b, z: 0, w: 1, u: 1, v: 0),
-			Vertex(x: r, y: t, z: 0, w: 1, u: 1, v: 1),
+		let rect = globalFrame
+		let l = rect.minX
+		let r = rect.maxX
+		let t = rect.maxY
+		let b = rect.minY
+		
+		let points:[CGPoint] = [
+			CGPoint(x: l, y: t),
+			CGPoint(x: l, y: b),
+			CGPoint(x: r, y: b),
+			CGPoint(x: l, y: t),
+			CGPoint(x: r, y: b),
+			CGPoint(x: r, y: t)
 		]
+		let uvs:[[Float]] = [
+			[0, 1],
+			[0, 0],
+			[1, 0],
+			[0, 1],
+			[1, 0],
+			[1, 1]
+		]
+		
+		let transform = globalTransform
+		
+		var vertices = [Vertex]()
+		for index in 0..<points.count {
+			let point = points[index].applying(transform)
+			let uv = uvs[index]
+			vertices.append(Vertex(x: Float(point.x), y: Float(point.y), z: 0, w: 1, u: uv[0], v: uv[1]))
+		}
+		
+		return vertices
 	}
 	
 	var vertexBuffer:MTLBuffer!
