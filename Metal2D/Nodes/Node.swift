@@ -205,7 +205,7 @@ extension Node {
 		let scale = self.globalScale
 		localPosition.x /= scale.width
 		localPosition.y /= scale.height
-		return localPosition
+		return localPosition.applying(globalTransform.inverted())
 	}
 	
 	func convert(position:CGPoint, toNode:Node) -> CGPoint {
