@@ -101,6 +101,7 @@ class Node: Interactable {
 	var highlighted: Bool = false
 	var selected: Bool = false
 	
+	var alpha: CGFloat = 1
 	var rotation: CGFloat = 0
 	var transform: CGAffineTransform {
 		let boundingRect = globalFrame
