@@ -117,9 +117,12 @@ class Node: Interactable {
 	var highlightedChildNode: Node? = nil
 	var selectedChildNode: Node? = nil
 	
-	func touchBegan(atPosition point: CGPoint) {}
-	func touchMoved(toPosition point: CGPoint, delta: CGPoint) {}
-	func touchEnded(atPosition point: CGPoint, delta: CGPoint) {}
+	func canHandleTouch(atPosition position: CGPoint) -> Bool {
+		return true
+	}
+	func touchBegan(atPosition position: CGPoint) {}
+	func touchMoved(toPosition position: CGPoint, delta: CGPoint) {}
+	func touchEnded(atPosition position: CGPoint, delta: CGPoint) {}
 	func touchCancelled() {}
 }
 

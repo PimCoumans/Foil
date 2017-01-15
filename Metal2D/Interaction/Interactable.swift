@@ -19,6 +19,7 @@ protocol Interactable {
 	var highlightedChildNode: Node? { get set }
 	var selectedChildNode: Node? { get set }
 	
+	func canHandleTouch(atPosition position: CGPoint) -> Bool
 	func touchBegan(atPosition position: CGPoint)
 	func touchMoved(toPosition position: CGPoint, delta: CGPoint)
 	func touchEnded(atPosition position: CGPoint, delta: CGPoint)
