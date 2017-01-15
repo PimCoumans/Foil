@@ -45,7 +45,7 @@ class TextureNode: Node {
 		frame.size.height *= -scale.height
 		frame.origin.x -= frame.width * anchorPoint.x
 		frame.origin.y += frame.height * anchorPoint.y
-		return frame
+		return frame.applying(transform)
 	}
 	
 	override var bounds: CGRect {

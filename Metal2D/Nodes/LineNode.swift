@@ -64,7 +64,7 @@ class LineNode : Node {
 			point.x *= scale.width
 			point.y *= scale.height
 			let globalPoint = position + point
-			return Vertex(point: globalPoint)
+			return Vertex(point: globalPoint.applying(globalTransform))
 		}
 		
 		return vertices

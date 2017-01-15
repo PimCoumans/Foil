@@ -23,7 +23,7 @@ class Node: Interactable {
 	var frame: CGRect {
 		var frame = bounds
 		frame.origin += position
-		return frame
+		return frame.applying(transform)
 	}
 	
 	var bounds: CGRect {
@@ -231,8 +231,8 @@ extension Node {
 			
 			guard !nodeFrame.isNull && !nodeFrame.isInfinite else { continue }
 			
-			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.minY) * scale.width
-			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.maxY) * scale.height
+			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.maxY) * scale.width
+			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.minY) * scale.height
 			
 			topLeft += position
 			bottomRight += position
@@ -241,7 +241,7 @@ extension Node {
 			
 			boundingFrame = boundingFrame.union(nodeFrame)
 		}
-		return boundingFrame
+		return boundingFrame.applying(transform)
 	}
 	
 	/// Searches the reciever for nodes in it's local coordinate space
@@ -275,7 +275,8 @@ extension Node {
 		
 		for node in children {
 			let localPosition = self.convert(worldPosition: position)
-			if node.boundingFrameOfChildren.contains(localPosition) {
+			let nodePosition = node.convert(worldPosition: position)
+			if node.boundingFrameOfChildren.contains(localPosition) && node.canHandleTouch(atPosition: nodePosition) {
 				if let foundNode = node.node(atPosition: position, where: predicate) {
 					return foundNode
 				} else if let foundNode = applyPredicate(withNode: node, predicate: predicate) {
