@@ -241,7 +241,7 @@ extension Node {
 			
 			boundingFrame = boundingFrame.union(nodeFrame)
 		}
-		return boundingFrame.applying(transform)
+		return boundingFrame.applying(globalTransform)
 	}
 	
 	/// Searches the reciever for nodes in it's local coordinate space
