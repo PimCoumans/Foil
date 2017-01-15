@@ -227,7 +227,7 @@ extension Node {
 		var boundingFrame = self.frame
 		for node in children {
 			guard !node.hidden else { continue }
-			var nodeFrame = node.boundingFrameOfChildren
+			var nodeFrame = node.boundingFrameOfChildren.applying(node.transform.inverted())
 			
 			guard !nodeFrame.isNull && !nodeFrame.isInfinite else { continue }
 			
@@ -241,7 +241,7 @@ extension Node {
 			
 			boundingFrame = boundingFrame.union(nodeFrame)
 		}
-		return boundingFrame.applying(globalTransform)
+		return boundingFrame.applying(transform)
 	}
 	
 	/// Searches the reciever for nodes in it's local coordinate space
