@@ -31,24 +31,20 @@ class RenderView: MTKView, MTKViewDelegate {
 	}
 	
 	var renderBlock:((_ context:RenderContext)->())?
-	let library:MTLLibrary!
+	var library:MTLLibrary!
 	
 	let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
 	var bufferIndex = 0
-	let commandQueue: MTLCommandQueue!
+	var commandQueue: MTLCommandQueue!
 	
 	init(frame frameRect:CGRect) {
 		let device = MTLCreateSystemDefaultDevice()
-		library = device?.newDefaultLibrary()
-		commandQueue = device?.makeCommandQueue()
 		super.init(frame: frameRect, device: device)
 		initializeMetal()
 	}
 	
 	required init(coder: NSCoder) {
 		let device = MTLCreateSystemDefaultDevice()
-		library = device?.newDefaultLibrary()
-		commandQueue = device?.makeCommandQueue()
 		super.init(coder: coder)
 		self.device = device
 		initializeMetal()
@@ -58,6 +54,8 @@ class RenderView: MTKView, MTKViewDelegate {
 		#if os(OSX)
 			window?.acceptsMouseMovedEvents = true
 		#endif
+		library = device?.newDefaultLibrary()
+		commandQueue = device?.makeCommandQueue()
 		screen = Screen(renderView: self)
 		renderBlock = { [weak self] context in
 			if let scene = self?.scene {
