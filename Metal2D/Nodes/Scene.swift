@@ -21,6 +21,7 @@ class Scene: Node {
 	}
 	
 	weak var inputReceivingNode: Node? = nil
+	var renderInZOrder: Bool = false
 	
 	override var handlesInput: Bool {
 		return true
@@ -39,6 +40,29 @@ class Scene: Node {
 	
 	func update(withContext context:RenderContext) {
 		// update, with... stuff?
+	}
+	
+	override func renderRecursively(with context: RenderContext) {
+		if !renderInZOrder {
+			super.renderRecursively(with: context)
+			return
+		}
+		// TODO: cache references to ordered nodes?
+		var nodes = [Node]()
+		func addNodesFromNode(node:Node) {
+			for child in node.children {
+				if child.children.count == 0 {
+					nodes.append(child)
+				} else {
+					addNodesFromNode(node: child)
+				}
+			}
+		}
+		addNodesFromNode(node: self)
+		nodes.sort(by: {$0.globalZPosition < $1.globalZPosition})
+		for node in nodes {
+			node.render(with: context)
+		}
 	}
 	
 	func willMoveToRenderView(renderView:RenderView?) {}

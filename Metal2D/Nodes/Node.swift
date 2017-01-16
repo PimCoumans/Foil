@@ -18,6 +18,7 @@ class Node: Interactable {
 	// If the parent has a scale of 2, this node has a scale of 1
 	// it will be rendered twice as big
 	var position = CGPoint.zero
+	var zPosition: CGFloat = 0
 	var anchorPoint = CGPoint(x: 0.5, y: 0.5)
 	var scale = CGSize(width: 1, height: 1)
 	var frame: CGRect {
@@ -145,6 +146,7 @@ extension Node: Hashable {
 
 extension Node {
 	
+	// TODO: cache global/world positions, update if self or a parent changes
 	// MARK: Global calculation
 	var globalPosition: CGPoint {
 		var position = CGPoint.zero
@@ -155,6 +157,14 @@ extension Node {
 				localPosition.y *= parent.scale.height
 			}
 			position += localPosition
+		}
+		return position
+	}
+	
+	var globalZPosition: CGFloat {
+		var position: CGFloat = 0
+		enumerateUp { node in
+			position += node.zPosition
 		}
 		return position
 	}
