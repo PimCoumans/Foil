@@ -50,7 +50,9 @@ class Scene: Node {
 		// TODO: cache references to ordered nodes?
 		var nodes = [Node]()
 		func addNodesFromNode(node:Node) {
+			guard !node.hidden else { return }
 			for child in node.children {
+				guard !child.hidden else { continue }
 				if child.children.count == 0 {
 					nodes.append(child)
 				} else {
