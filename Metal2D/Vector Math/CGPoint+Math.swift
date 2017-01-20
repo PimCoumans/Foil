@@ -59,12 +59,6 @@ extension CGPoint {
 	}
 }
 
-extension CGPoint: CustomStringConvertible {
-	public var description: String {
-		return "(\(x), \(y))"
-	}
-}
-
 public prefix func + (value: CGPoint) -> CGPoint {
 	return value
 }
