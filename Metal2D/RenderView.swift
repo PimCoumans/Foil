@@ -95,7 +95,7 @@ class RenderView: MTKView, MTKViewDelegate {
 		if let renderPassDescriptor = view.currentRenderPassDescriptor, let drawable = view.currentDrawable {
 			
 			renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-			renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.25, 0.25, 0.25, 1)
+			renderPassDescriptor.colorAttachments[0].clearColor = clearColor
 			renderPassDescriptor.colorAttachments[0].loadAction = .clear
 			renderPassDescriptor.colorAttachments[0].storeAction = .store
 			
