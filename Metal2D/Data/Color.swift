@@ -72,10 +72,10 @@ extension Color {
 			a = Float(alpha)
 		#endif
 		
-		red = r
-		green = g
-		blue = b
-		alpha = a
+		self.red = r
+		self.green = g
+		self.blue = b
+		self.alpha = a
 	}
 }
 
