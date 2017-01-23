@@ -23,41 +23,6 @@ class LineNode : Node {
 		}
 	}
 	
-	struct VertexColor {
-		var r, g, b, a: Float
-		init(color: Color) {
-			#if os(OSX)
-				if color.numberOfComponents < 4 {
-					let white = Float(color.whiteComponent)
-					r = white
-					g = white
-					b = white
-					a = Float(color.alphaComponent)
-				}
-				else {
-					r = Float(color.redComponent)
-					g = Float(color.greenComponent)
-					b = Float(color.blueComponent)
-					a = Float(color.alphaComponent)
-				}
-			#elseif os(iOS)
-				var red: CGFloat = 0
-				var green: CGFloat = 0
-				var blue: CGFloat = 0
-				var alpha: CGFloat = 0
-				if !color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-					color.getWhite(&red, alpha: &alpha)
-					green = red
-					blue = red
-				}
-				r = Float(red)
-				g = Float(green)
-				b = Float(blue)
-				a = Float(alpha)
-			#endif
-		}
-	}
-	
 	struct Uniforms {
 		var modelViewProjectionMatrix: GLKMatrix4
 	}
@@ -125,7 +90,7 @@ class LineNode : Node {
 		vertexBuffer = device.makeBuffer(length:vertexSize * MaxBuffers)
 		vertexBuffer.label = "vertices"
 		
-		let colorSize = max(MemoryLayout<VertexColor>.size * 6, 256)
+		let colorSize = max(MemoryLayout<Color>.size * 6, 256)
 		vertexColorBuffer = device.makeBuffer(length: colorSize * MaxBuffers)
 		vertexColorBuffer.label = "colors"
 		
@@ -173,10 +138,10 @@ class LineNode : Node {
 			vertexArray[index] = vertices[index]
 		}
 		
-		let colorArray = (vertexColorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:VertexColor.self, capacity: 256 / MemoryLayout<VertexColor>.stride)
+		let colorArray = (vertexColorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Color.self, capacity: 256 / MemoryLayout<Color>.stride)
 		for index in 0 ..< vertices.count {
 			let colorIndex = [0, 3, 5].contains(index) ? 0 : 1
-			colorArray[index] = VertexColor(color: colors[colorIndex])
+			colorArray[index] = colors[colorIndex]
 		}
 		
 		let uniforms = Uniforms(modelViewProjectionMatrix: context.transform)

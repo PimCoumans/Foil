@@ -6,11 +6,7 @@
 //  Copyright © 2016 pixelrock. All rights reserved.
 //
 
-#if os(iOS)
-	import UIKit
-#elseif os(OSX)
-	import Cocoa
-#endif
+import CoreGraphics
 
 class ExampleScene: Scene {
 	var textureNode:TextureNode!
@@ -18,12 +14,7 @@ class ExampleScene: Scene {
 	
 	override func didMoveToRenderView() {
 		guard let renderView = renderView else { return }
-		#if os(iOS)
-			let image = UIImage(named:"pim")
-		#elseif os(OSX)
-			let image = NSImage(named:"pim")
-			
-		#endif
+		let image = Image(named: "pim")
 		renderView.screen.zoomScale = 60
 		
 		let rootNode = Node()
@@ -38,6 +29,7 @@ class ExampleScene: Scene {
 		}
 		
 		lineNode = LineNode()
+		lineNode.colors = [.yellow, .purple]
 		rootNode.addChild(lineNode)
 	}
 	

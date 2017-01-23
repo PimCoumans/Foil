@@ -55,6 +55,9 @@
 		3EBF1B191E1962B100608E9C /* Interactable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B161E1962B100608E9C /* Interactable.swift */; };
 		3EBF1B231E196B7A00608E9C /* RenderView+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */; };
 		3EBF1B241E196B7A00608E9C /* RenderView+Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */; };
+		3EC388811E365EE8006ED5C7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC388801E365EE8006ED5C7 /* Color.swift */; };
+		3EC388821E365EE8006ED5C7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC388801E365EE8006ED5C7 /* Color.swift */; };
+		3EC388831E365EE8006ED5C7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC388801E365EE8006ED5C7 /* Color.swift */; };
 		3ECD41711E16930B00B64CE3 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E76602E1E15294900C302BE /* RenderView.swift */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +113,7 @@
 		3EBF1B161E1962B100608E9C /* Interactable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interactable.swift; sourceTree = "<group>"; };
 		3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RenderView+Interaction.swift"; sourceTree = "<group>"; };
 		3EBF1B251E196C6400608E9C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
+		3EC388801E365EE8006ED5C7 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +231,7 @@
 				3E8E66DA1DE8786500DBB707 /* Nodes */,
 				3EBF1B151E19629000608E9C /* Interaction */,
 				3E7E02721E1AA4690000165D /* Vector Math */,
+				3EC3887F1E365E83006ED5C7 /* Data */,
 				3E8E66BC1DE8781600DBB707 /* Shaders.metal */,
 				3E76602E1E15294900C302BE /* RenderView.swift */,
 			);
@@ -261,6 +266,14 @@
 				3EBF1B221E196B7A00608E9C /* RenderView+Interaction.swift */,
 			);
 			path = Interaction;
+			sourceTree = "<group>";
+		};
+		3EC3887F1E365E83006ED5C7 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				3EC388801E365EE8006ED5C7 /* Color.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -405,6 +418,7 @@
 				3E7660451E155B9000C302BE /* TextureNode.swift in Sources */,
 				3E7E02751E1AA4770000165D /* CGPoint+Math.swift in Sources */,
 				3E1394611E26D1FB001BE860 /* LineNode.swift in Sources */,
+				3EC388831E365EE8006ED5C7 /* Color.swift in Sources */,
 				3E7660371E155B6F00C302BE /* AppDelegate.swift in Sources */,
 				3E7660491E155B9000C302BE /* RenderView.swift in Sources */,
 				3E7660461E155B9000C302BE /* Screen.swift in Sources */,
@@ -426,6 +440,7 @@
 				3E80B2421E16A35D0005956A /* AppDelegate.swift in Sources */,
 				3E7E02741E1AA4770000165D /* CGPoint+Math.swift in Sources */,
 				3E13945F1E26D1FB001BE860 /* LineNode.swift in Sources */,
+				3EC388811E365EE8006ED5C7 /* Color.swift in Sources */,
 				3EAF82031DF30F23003D229F /* Screen.swift in Sources */,
 				3E76602F1E15294900C302BE /* RenderView.swift in Sources */,
 				3E2AA1011E16CF2700912C7F /* ExampleScene.swift in Sources */,
@@ -441,6 +456,7 @@
 			files = (
 				3E8E66D01DE8781700DBB707 /* Metal2DTests.swift in Sources */,
 				3E1394601E26D1FB001BE860 /* LineNode.swift in Sources */,
+				3EC388821E365EE8006ED5C7 /* Color.swift in Sources */,
 				3E8E66DD1DE8787500DBB707 /* Node.swift in Sources */,
 				3E8E66E01DE8789800DBB707 /* Scene.swift in Sources */,
 				3E7E027A1E1AA49B0000165D /* CGSize+Math.swift in Sources */,

@@ -14,11 +14,9 @@ import GLKit
 #if os(iOS)
 	import UIKit
 	typealias Image = UIImage
-	typealias Color = UIColor
 #elseif os(OSX)
 	import Cocoa
 	typealias Image = NSImage
-	typealias Color = NSColor
 #endif
 
 fileprivate let VertextCount = 6
@@ -122,7 +120,7 @@ class TextureNode: Node {
 		uniformsBuffer = device.makeBuffer(length: uniformsSize * MaxBuffers)
 		uniformsBuffer.label = "uniforms"
 		
-		let colorSize = max(MemoryLayout<Float>.size * 4, 256)
+		let colorSize = max(MemoryLayout<Color>.size, 256)
 		colorBuffer = device.makeBuffer(length: colorSize * MaxBuffers)
 		colorBuffer.label = "colors"
 		
@@ -240,38 +238,8 @@ class TextureNode: Node {
 		let uniformsArray = (uniformsBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Uniforms.self, capacity: 256 / MemoryLayout<Uniforms>.stride)
 		uniformsArray[0] = uniforms
 		
-		var red: CGFloat = 0
-		var green: CGFloat = 0
-		var blue: CGFloat = 0
-		var alpha: CGFloat = 0
-		
-		#if os(OSX)
-			if color.numberOfComponents < 4 {
-				let white = color.whiteComponent
-				red = white
-				green = white
-				blue = white
-				alpha = color.alphaComponent
-			}
-			else {
-				red = color.redComponent
-				green = color.greenComponent
-				blue = color.blueComponent
-				alpha = color.alphaComponent
-			}
-		#elseif os(iOS)
-			if !color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-				color.getWhite(&red, alpha: &alpha)
-				green = red
-				blue = red
-			}
-		#endif
-		
-		let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Float.self, capacity: 256 / (MemoryLayout<Float>.stride * 4))
-		componentArray[0] = Float(red)
-		componentArray[1] = Float(green)
-		componentArray[2] = Float(blue)
-		componentArray[3] = Float(alpha)
+		let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Color.self, capacity: 256 / (MemoryLayout<Color>.stride))
+		componentArray[0] = color
 		
 		encoder.setRenderPipelineState(renderPipelineState)
 		
