@@ -13,8 +13,10 @@ extension CGSize {
 		let difference = self - point
 		return fabs(difference.width) < epsilon && fabs(difference.height) < epsilon
 	}
-	
-	public mutating func lerp(to size: CGSize, t: Double) {
+}
+
+extension CGSize: Lerpable {
+	mutating func lerp(to size: CGSize, t: Double) {
 		let difference = size - self
 		self += (difference * CGFloat(t))
 	}

@@ -118,7 +118,7 @@ extension Color {
 }
 
 // Animation
-extension Color {
+extension Color: Lerpable {
 	mutating func lerp(to color: Color, t: Double) {
 		if self == color {
 			return
