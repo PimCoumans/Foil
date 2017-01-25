@@ -37,17 +37,19 @@ class ExampleScene: Scene {
 		rootNode.addChild(lineNode)
 		
 		if useAnimations {
-			rootNode.animate(.rotation, to: CGFloat.pi * -2, duration: 6, curve: .linear).loop()
-			textureNode.animate(.rotation, to: CGFloat.pi * 4, duration: 6, curve: .linear).loop()
 			
-			sequenceAnimation = SequenceAnimation(curve: .linear, duration: 2)
-				
-			SequenceAnimation(curve: .linear, duration: 4).animate {
+			rootNode.animate(.rotation, to: CGFloat.pi * -2, duration: 6, curve: Linear()).loop()
+			
+			Animator.animate(duration: 2, curve: ElasticOut()) {
+				textureNode.animate(.rotation, to: CGFloat.pi * 2).loop()
+			}
+			
+			sequenceAnimation = SequenceAnimation(curve: Linear(), duration: 2)
+			sequenceAnimation?.animate {
 				textureNode.animate(.position, to: CGPoint(x: 4, y: -4))
 				textureNode.animate(.scale, to: CGSize(width: 2, height: 1))
-			}
-			.animate {
-				textureNode.animate(.position, to: CGPoint(x: -4, y: 4))
+			}.animate {
+				textureNode.animate(.position, to: CGPoint(x: -4, y: 4), curve: ElasticOut())
 				textureNode.animate(.scale, to: CGSize(width: 1, height: 2))
 			}.animate {
 				textureNode.animate(.position, to: CGPoint(x: 0, y: 0))

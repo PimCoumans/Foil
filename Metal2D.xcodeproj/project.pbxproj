@@ -13,6 +13,9 @@
 		3E2AA0FE1E16A5D900912C7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23A1E16A35D0005956A /* Assets.xcassets */; };
 		3E2AA1011E16CF2700912C7F /* ExampleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2AA1001E16CF2700912C7F /* ExampleScene.swift */; };
 		3E2AA1021E16CF2700912C7F /* ExampleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2AA1001E16CF2700912C7F /* ExampleScene.swift */; };
+		3E65C0BE1E38E84B0083BBE2 /* AnimationCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */; };
+		3E65C0BF1E38E84B0083BBE2 /* AnimationCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */; };
+		3E65C0C01E38E84B0083BBE2 /* AnimationCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */; };
 		3E76602F1E15294900C302BE /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E76602E1E15294900C302BE /* RenderView.swift */; };
 		3E7660371E155B6F00C302BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7660361E155B6F00C302BE /* AppDelegate.swift */; };
 		3E7660391E155B6F00C302BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7660381E155B6F00C302BE /* ViewController.swift */; };
@@ -84,6 +87,7 @@
 /* Begin PBXFileReference section */
 		3E13945E1E26D1FB001BE860 /* LineNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineNode.swift; sourceTree = "<group>"; };
 		3E2AA1001E16CF2700912C7F /* ExampleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleScene.swift; sourceTree = "<group>"; };
+		3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationCurve.swift; sourceTree = "<group>"; };
 		3E76602E1E15294900C302BE /* RenderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		3E7660341E155B6F00C302BE /* Metal2DMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metal2DMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7660361E155B6F00C302BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -268,6 +272,7 @@
 			isa = PBXGroup;
 			children = (
 				3EA163F81E36A88100DFDA42 /* Animator.swift */,
+				3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */,
 			);
 			path = Animation;
 			sourceTree = "<group>";
@@ -423,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E65C0C01E38E84B0083BBE2 /* AnimationCurve.swift in Sources */,
 				3E7660441E155B9000C302BE /* Scene.swift in Sources */,
 				3E7660471E155B9000C302BE /* Shaders.metal in Sources */,
 				3E2AA1021E16CF2700912C7F /* ExampleScene.swift in Sources */,
@@ -446,6 +452,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E65C0BE1E38E84B0083BBE2 /* AnimationCurve.swift in Sources */,
 				3E8E66BD1DE8781600DBB707 /* Shaders.metal in Sources */,
 				3E8E66DF1DE8789800DBB707 /* Scene.swift in Sources */,
 				3E8E66DC1DE8787500DBB707 /* Node.swift in Sources */,
@@ -480,6 +487,7 @@
 				3ECD41711E16930B00B64CE3 /* RenderView.swift in Sources */,
 				3EBF1B181E1962B100608E9C /* Interactable.swift in Sources */,
 				3E7E02791E1AA49B0000165D /* CGPoint+Math.swift in Sources */,
+				3E65C0BF1E38E84B0083BBE2 /* AnimationCurve.swift in Sources */,
 				3EAF82041DF30F23003D229F /* Screen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

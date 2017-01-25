@@ -9,40 +9,9 @@
 import Foundation
 import CoreGraphics
 
-protocol Lerpable: Equatable {
-	mutating func lerp(to: Self, t: Double)
-	func lerped(to: Self, t: Double) -> Self
-}
-
-extension Lerpable {
-	func lerped(to: Self, t: Double) -> Self {
-		var value = self
-		value.lerp(to: to, t: t)
-		return value
-	}
-}
-
-extension CGFloat: Lerpable {
-	mutating internal func lerp(to: CGFloat, t: Double) {
-		self += (to - self) * CGFloat(t)
-	}	
-}
-
-extension Equatable where Self: AnyObject {
-	static func ==(lhs:Self, rhs:Self) -> Bool {
-		return lhs === rhs
-	}
-}
-
 class Animation {
 	
-	struct Curve {
-		static var linear: Curve {
-			return Curve()
-		}
-	}
-	
-	let curve: Curve
+	let curve: AnimationCurve
 	let duration: TimeInterval
 	
 	var repeats: Bool = false
@@ -55,17 +24,19 @@ class Animation {
 	var progressedTime: TimeInterval = 0
 	
 	var progress: Double {
-		return progressedTime / duration
+		return curve.value(for: progressedTime / duration)
 	}
 	
-	init(curve: Curve, duration: TimeInterval, repeats: Bool = false) {
+	init(curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
 		self.curve = curve
 		self.duration = duration
 		self.repeats = repeats
 	}
 	
 	@discardableResult func start() -> Self {
-		Animator.start(self)
+		if !Animator.shared.animations.contains(self) {
+			Animator.start(self)
+		}
 		return self
 	}
 	
@@ -117,7 +88,7 @@ class PropertyAnimation<T:Lerpable>: Animation {
 	var startValue: T?
 	let endValue: T
 	
-	init(on target: Node, property: Node.Property, startValue: T? = nil, endValue: T, curve: Curve, duration: TimeInterval, repeats: Bool = false) {
+	init(on target: Node, property: Node.Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
 		self.target = target
 		self.property = property
 		self.startValue = startValue
@@ -196,7 +167,7 @@ class SequenceAnimation: Animation {
 
 fileprivate struct AnimationContext {
 	let duration: TimeInterval
-	let curve: Animation.Curve
+	let curve: AnimationCurve
 }
 
 class Animator {
@@ -213,7 +184,7 @@ class Animator {
 	fileprivate var animationContext: AnimationContext?
 	var queuedAnimations = [Animation]()
 	
-	class func animate(duration: TimeInterval, curve: Animation.Curve, using block:() -> Void) {
+	class func animate(duration: TimeInterval, curve: AnimationCurve, using block:() -> Void) {
 		shared.animationContext = AnimationContext(duration: duration, curve: curve)
 		block()
 		shared.animationContext = nil
@@ -281,7 +252,7 @@ extension Node {
 		}
 	}
 	
-	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: Animation.Curve? = nil) -> Animation {
+	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: AnimationCurve? = nil) -> Animation {
 		let context = Animator.shared.animationContext
 		guard let animationDuration = duration ?? context?.duration,
 			let animationCurve = curve ?? context?.curve else {
