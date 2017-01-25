@@ -58,6 +58,7 @@ class RenderView: MTKView, MTKViewDelegate {
 		commandQueue = device?.makeCommandQueue()
 		screen = Screen(renderView: self)
 		renderBlock = { [weak self] context in
+			Animator.shared.update(with: context)
 			if let scene = self?.scene {
 				scene.update(withContext: context)
 				scene.renderRecursively(with: context)
