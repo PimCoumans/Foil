@@ -107,7 +107,12 @@ struct Property: RawRepresentable, Equatable, Hashable {
     }
 }
 
-class PropertyAnimation<T:Lerpable>: Animation {
+protocol TargetPropertyContainer {
+	weak var target: Node? { get }
+	var property: Property { get }
+}
+
+class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	
 	private(set)
 	weak var target: Node?
@@ -129,6 +134,11 @@ class PropertyAnimation<T:Lerpable>: Animation {
 			startValue = target?.get(property)
 		}
 		super.update(delta: delta)
+	}
+	
+	override func reset() -> PropertyAnimation {
+		startValue = nil
+		return super.reset() as! PropertyAnimation
 	}
 	
 	override func didUpdate(delta: Double) {
@@ -247,7 +257,28 @@ class Animator {
 }
 
 extension Node {
-    
+	
+	func animations(for property:Property? = nil) -> [Animation] {
+		return Animator.shared.runningAnimations.filter({ animation -> Bool in
+			guard let animation = animation as? TargetPropertyContainer, animation.target == self else {
+				return false
+			}
+			guard let property = property else {
+				return true
+			}
+			return animation.property == property
+		})
+	}
+	
+	func cancelAnimations(for property:Property? = nil) {
+		for animation in animations(for: property) {
+			animation.isRunning = false
+			if let index = Animator.shared.animations.index(of: animation) {
+				Animator.shared.animations.remove(at: index)
+			}
+		}
+	}
+	
 	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: AnimationCurve? = nil) -> Animation {
 		let context = Animator.shared.animationContext
 		guard let animationDuration = duration ?? context?.duration,
