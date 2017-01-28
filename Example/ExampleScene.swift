@@ -38,22 +38,24 @@ class ExampleScene: Scene {
 		
 		if useAnimations {
 			
-			rootNode.animate(.rotation, to: CGFloat.pi * -2, duration: 6, curve: Linear()).loop()
+			rootNode.animate(.position, to: CGFloat.pi * -2, duration: 6, curve: Linear()).loop()
 			
 			Animator.animate(duration: 2, curve: ElasticOut()) {
 				textureNode.animate(.rotation, to: CGFloat.pi * 2).loop()
 			}
-			
-			sequenceAnimation = SequenceAnimation(curve: Linear(), duration: 2)
-			sequenceAnimation?.animate {
+            
+			SequenceAnimation(curve: Spring(damping: 15, mass: 1.0, stiffness: 500, velocity: 0), duration: 2).animate {
 				textureNode.animate(.position, to: CGPoint(x: 4, y: -4))
 				textureNode.animate(.scale, to: CGSize(width: 2, height: 1))
+				lineNode.animate(.position(at: 1), to: CGPoint(x: -4, y: 4))
 			}.animate {
-				textureNode.animate(.position, to: CGPoint(x: -4, y: 4), curve: ElasticOut())
+				textureNode.animate(.position, to: CGPoint(x: -4, y: 4))
 				textureNode.animate(.scale, to: CGSize(width: 1, height: 2))
+				lineNode.animate(.position(at: 1), to: CGPoint(x: 4, y: -4))
 			}.animate {
 				textureNode.animate(.position, to: CGPoint(x: 0, y: 0))
 				textureNode.animate(.scale, to: CGSize(width: 1, height: 1))
+				lineNode.animate(.position(at: 1), to: CGPoint(x: 0, y: 0))
 			}.loop()
 		}
 	}
@@ -95,7 +97,7 @@ class ExampleScene: Scene {
 				textureNode.position = rootNode.convert(worldPosition: cappedPosition)
 			}
 		}
-		lineNode.points[1] = textureNode.position
+//		lineNode.points[1] = textureNode.position
 	}
 	
 	override func touchBegan(atPosition position: CGPoint) {
