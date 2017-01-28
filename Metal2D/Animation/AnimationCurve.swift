@@ -60,3 +60,53 @@ struct ElasticOut: AnimationCurve {
 		return sin(-13 * M_PI_2 * (p + 1)) * pow(2, -10 * p) + 1;
 	}
 }
+
+struct Spring: AnimationCurve {
+	
+	let damping: Double
+	let mass: Double
+	let stiffness: Double
+	var velocity: Double = 0
+	
+	func value(for progress: Double) -> Double {
+		if damping <= 0.0 || stiffness <= 0.0 || mass <= 0.0 {
+			fatalError("Incorrect animation values")
+		}
+		
+		let beta = damping / (2 * mass)
+		let omega0 = sqrt(stiffness / mass)
+		let omega1 = sqrt((omega0 * omega0) - (beta * beta))
+		let omega2 = sqrt((beta * beta) - (omega0 * omega0))
+		
+		let x0: Double = -1
+		
+		let oscillation: (Double) -> Double
+		
+		if beta < omega0 {
+			// Underdamped
+			oscillation = {t in
+				let envelope = exp(-beta * t)
+    
+				let part2 = x0 * cos(omega1 * t)
+				let part3 = ((beta * x0 + self.velocity) / omega1) * sin(omega1 * t)
+				return -x0 + envelope * (part2 + part3)
+			}
+		} else if beta == omega0 {
+			// Critically damped
+			oscillation = {t in
+				let envelope = exp(-beta * t)
+				return -x0 + envelope * (x0 + (beta * x0 + self.velocity) * t)
+			}
+		} else {
+			// Overdamped
+			oscillation = {t in
+				let envelope = exp(-beta * t)
+				let part2 = x0 * cosh(omega2 * t)
+				let part3 = ((beta * x0 + self.velocity) / omega2) * sinh(omega2 * t)
+				return -x0 + envelope * (part2 + part3)
+			}
+		}
+		
+		return oscillation(progress)
+	}
+}
