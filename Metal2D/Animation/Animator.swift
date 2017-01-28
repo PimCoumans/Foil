@@ -79,16 +79,44 @@ extension Animation: Equatable {
 	}
 }
 
+struct Property: RawRepresentable, Equatable, Hashable {
+    
+    var rawValue: String
+    var index: Int
+    
+    init(rawValue: Property.RawValue) {
+        self.rawValue = rawValue
+        self.index = 0
+    }
+    
+    init(_ rawValue: Property.RawValue, at index: Int) {
+        self.rawValue = rawValue
+        self.index = index
+    }
+    
+    static var position: Property = Property(rawValue:"position")
+    static let scale: Property = Property(rawValue:"scale")
+    static let rotation: Property = Property(rawValue:"rotation")
+    
+    var hashValue: Int {
+        return rawValue.hash
+    }
+    
+    static func ==(lhs: Property, rhs: Property) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+
 class PropertyAnimation<T:Lerpable>: Animation {
 	
 	private(set)
 	weak var target: Node?
 	
-	let property: Node.Property
+	let property: Property
 	var startValue: T?
 	let endValue: T
 	
-	init(on target: Node, property: Node.Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
+	init(on target: Node, property: Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
 		self.target = target
 		self.property = property
 		self.startValue = startValue
@@ -106,7 +134,7 @@ class PropertyAnimation<T:Lerpable>: Animation {
 	override func didUpdate(delta: Double) {
 		if let value = startValue {
 			let currentValue = value.lerped(to: endValue, t: progress)
-			target?.update(property, with: currentValue)
+			target?.set(property, value: currentValue)
 		}
 	}
 }
@@ -219,39 +247,7 @@ class Animator {
 }
 
 extension Node {
-	
-	enum Property {
-		case position
-		case scale
-		case rotation
-	}
-	
-	fileprivate final func update<T:Lerpable>(_ property: Property, with value: T) {
-		set(property, value: value)
-	}
-	
-	fileprivate func set<T:Lerpable>(_ property: Property, value: T) {
-		switch property {
-		case .position:
-			position = value as? CGPoint ?? position
-		case .scale:
-			scale = value as? CGSize ?? scale
-		case .rotation:
-			rotation = value as? CGFloat ?? rotation
-		}
-	}
-	
-	fileprivate func get<T:Lerpable>(_ property: Property) -> T? {
-		switch property {
-		case .position:
-			return position as? T
-		case .scale:
-			return scale as? T
-		case .rotation:
-			return rotation as? T
-		}
-	}
-	
+    
 	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: AnimationCurve? = nil) -> Animation {
 		let context = Animator.shared.animationContext
 		guard let animationDuration = duration ?? context?.duration,

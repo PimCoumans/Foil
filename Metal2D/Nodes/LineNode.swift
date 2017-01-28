@@ -158,4 +158,41 @@ class LineNode : Node {
 		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
 	}
 	
+	override func get<T : Lerpable>(_ property: Property) -> T? {
+		switch property {
+		case Property.indexedPosition:
+			return points[property.index] as? T
+		case Property.indexedColor:
+			return colors[property.index] as? T
+		default:
+			return super.get(property)
+		}
+	}
+	
+	override func set<T : Lerpable>(_ property: Property, value: T) {
+		switch property {
+		case Property.indexedPosition:
+			if let point = value as? CGPoint {
+				points[property.index] = point
+			}
+		case Property.indexedColor:
+			if let color = value as? Color {
+				colors[property.index] = color
+			}
+		default:
+			super.set(property, value: value)
+		}
+	}
+}
+
+
+extension Property {
+	static let indexedPosition = Property(rawValue: "indexedPosition")
+	static func position(at index: Int) -> Property {
+		return Property(Property.indexedPosition.rawValue, at: index)
+	}
+	static let indexedColor = Property(rawValue: "indexedColor")
+	static func color(at index: Int) -> Property {
+		return Property(Property.indexedColor.rawValue, at: index)
+	}
 }

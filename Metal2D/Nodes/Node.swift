@@ -125,6 +125,33 @@ class Node: Interactable {
 	func touchMoved(toPosition position: CGPoint, delta: CGPoint) {}
 	func touchEnded(atPosition position: CGPoint, delta: CGPoint) {}
 	func touchCancelled() {}
+	
+	// MARK: Animation support
+	func set<T:Lerpable>(_ property: Property, value: T) {
+		switch property {
+		case Property.position:
+			position = value as? CGPoint ?? position
+		case Property.scale:
+			scale = value as? CGSize ?? scale
+		case Property.rotation:
+			rotation = value as? CGFloat ?? rotation
+		default: break
+		}
+	}
+	
+	func get<T:Lerpable>(_ property: Property) -> T? {
+		switch property {
+		case Property.position:
+			return position as? T
+		case Property.scale:
+			return scale as? T
+		case Property.rotation:
+			return rotation as? T
+		default:
+			return nil
+		}
+	}
+	
 }
 
 extension Node: Hashable {
