@@ -160,9 +160,9 @@ class LineNode : Node {
 	
 	override func get<T : Lerpable>(_ property: Property) -> T? {
 		switch property {
-		case Property.indexedPosition:
+		case Property.position(at: property.index):
 			return points[property.index] as? T
-		case Property.indexedColor:
+		case Property.color(at: property.index):
 			return colors[property.index] as? T
 		default:
 			return super.get(property)
@@ -171,11 +171,11 @@ class LineNode : Node {
 	
 	override func set<T : Lerpable>(_ property: Property, value: T) {
 		switch property {
-		case Property.indexedPosition:
+		case Property.position(at: property.index):
 			if let point = value as? CGPoint {
 				points[property.index] = point
 			}
-		case Property.indexedColor:
+		case Property.color(at: property.index):
 			if let color = value as? Color {
 				colors[property.index] = color
 			}
@@ -189,10 +189,10 @@ class LineNode : Node {
 extension Property {
 	static let indexedPosition = Property(rawValue: "indexedPosition")
 	static func position(at index: Int) -> Property {
-		return Property(Property.indexedPosition.rawValue, at: index)
+		return Property(indexedPosition.rawValue, at: index)
 	}
 	static let indexedColor = Property(rawValue: "indexedColor")
 	static func color(at index: Int) -> Property {
-		return Property(Property.indexedColor.rawValue, at: index)
+		return Property(indexedColor.rawValue, at: index)
 	}
 }

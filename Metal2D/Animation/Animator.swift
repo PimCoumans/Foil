@@ -109,7 +109,7 @@ struct Property: RawRepresentable, Equatable, Hashable {
 	static let relativeRotation: Property = Property("relativeRotation", relative: true)
     
     var hashValue: Int {
-        return rawValue.hash
+		return rawValue.hashValue + (self.index + 1)
     }
     
     static func ==(lhs: Property, rhs: Property) -> Bool {
@@ -299,6 +299,7 @@ extension Node {
 	}
 	
 	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: AnimationCurve? = nil) -> Animation {
+		cancelAnimations(for: property)
 		let context = Animator.shared.animationContext
 		guard let animationDuration = duration ?? context?.duration,
 			let animationCurve = curve ?? context?.curve else {
