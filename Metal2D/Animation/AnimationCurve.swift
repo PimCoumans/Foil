@@ -64,9 +64,9 @@ struct ElasticOut: AnimationCurve {
 
 struct Spring: AnimationCurve {
 	
-	let damping: Double
-	let mass: Double
-	let stiffness: Double
+	var damping: Double
+	var mass: Double
+	var stiffness: Double
 	var velocity: Double = 0
 	
 	func value(for progress: Double) -> Double {
