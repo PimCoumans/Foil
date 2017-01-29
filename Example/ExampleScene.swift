@@ -45,21 +45,27 @@ class ExampleScene: Scene {
 			}
             
 			sequenceAnimation = SequenceAnimation(curve: Spring(damping: 15, mass: 1.0, stiffness: 500, velocity: 0), duration: 2)
-			sequenceAnimation.animate {
+			sequenceAnimation?.animate {
 				textureNode.animate(.position, to: CGPoint(x: 4, y: -4))
 				textureNode.animate(.scale, to: CGSize(width: 2, height: 1))
 				lineNode.animate(.position(at: 1), to: CGPoint(x: -4, y: 4))
 				lineNode.animate(.position(at: 0), to: CGPoint(x: 4, y: 4))
+				lineNode.animate(.color(at:0), to: Color(red: 1, green: 0, blue: 0))
+				lineNode.animate(.color(at:1), to: Color(red: 0, green: 1, blue: 1))
 			}.animate {
 				textureNode.animate(.position, to: CGPoint(x: -4, y: 4))
 				textureNode.animate(.scale, to: CGSize(width: 1, height: 2))
 				lineNode.animate(.position(at: 1), to: CGPoint(x: 4, y: -4))
 				lineNode.animate(.position(at: 0), to: CGPoint(x: -4, y: -4))
+				lineNode.animate(.color(at:0), to: Color(red: 1, green: 0, blue: 1))
+				lineNode.animate(.color(at:1), to: Color(red: 0, green: 1, blue: 0))
 			}.animate {
 				textureNode.animate(.position, to: CGPoint(x: 0, y: 0))
 				textureNode.animate(.scale, to: CGSize(width: 1, height: 1))
 				lineNode.animate(.position(at: 1), to: CGPoint(x: 0, y: 0))
 				lineNode.animate(.position(at: 0), to: CGPoint(x: 2, y: -2))
+				lineNode.animate(.color(at:0), to: Color(red: 0, green: 1, blue: 0))
+				lineNode.animate(.color(at:0), to: Color(red: 1, green: 0, blue: 1))
 			}.loop()
 		}
 	}
