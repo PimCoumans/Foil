@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 protocol Lerpable: Equatable {
 	mutating func lerp(to: Self, t: Double)
