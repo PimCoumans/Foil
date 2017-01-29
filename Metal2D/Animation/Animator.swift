@@ -164,8 +164,22 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	}
 }
 
+class ClosureAnimation: Animation {
+	var closure: () -> Void
+	init(_ closure: @escaping () -> Void) {
+		self.closure = closure
+		super.init(curve: Linear(), duration: 0)
+	}
+	
+	override func didUpdate(delta: TimeInterval) {
+		closure()
+		isRunning = false
+	}
+}
+
 class SequenceAnimation: Animation {
 	
+	var sequenceQueue = [() -> Void]()
 	var sequence = [[Animation]]()
 	var finishedSequence = [[Animation]]()
 	
@@ -182,6 +196,13 @@ class SequenceAnimation: Animation {
 		sequence.append(animator.queuedAnimations)
 		animator.queuedAnimations.removeAll()
 		return self.start()
+	}
+	
+	@discardableResult func closure(_ closure: @escaping () -> Void) -> Self {
+		animate {
+			ClosureAnimation(closure).start()
+		}
+		return self
 	}
 	
 	override func update(delta: TimeInterval) {
