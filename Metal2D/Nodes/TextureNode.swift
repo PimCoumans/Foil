@@ -53,25 +53,16 @@ class TextureNode: Node {
 		return frame
 	}
 	
-	var image: Image {
+	var imageName: String {
 		didSet {
-			if let cgImage = TextureNode.convert(image: image) {
-				self.cgImage = cgImage
-			}
-		}
-	}
-	var cgImage: CGImage {
-		didSet {
-			// Update texture if available
-			if let textureLoader = TextureNode.textureLoader {
-				self.texture = try! textureLoader.newTexture(with: cgImage, options: nil)
-			}
+			guard let device = scene?.renderView?.device else { return }
+			self.texture = try! TextureNode.loadTexture(imageName: imageName, device: device)
 		}
 	}
 	let size: CGSize
 	var color: Color = Color.white
 	
-	private class func convert(image:Image) -> CGImage? {
+	fileprivate class func convert(image:Image) -> CGImage? {
 		#if os(OSX)
 			if let data = image.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
 				if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
@@ -93,15 +84,8 @@ class TextureNode: Node {
 		return nil
 	}
 	
-	init?(image:Image, size:CGSize) {
-		
-		self.image = image
-		if let cgImage = TextureNode.convert(image: image) {
-			self.cgImage = cgImage
-		}
-		else {
-			return nil
-		}
+	init?(imageName: String, size: CGSize) {
+		self.imageName = imageName
 		self.size = size
 		
 		super.init()
@@ -125,12 +109,7 @@ class TextureNode: Node {
 		colorBuffer.label = "colors"
 		
 		if texture == nil {
-			if TextureNode.textureLoader == nil {
-				TextureNode.textureLoader = MTKTextureLoader(device: device)
-			}
-			if let textureLoader = TextureNode.textureLoader {
-				texture = try! textureLoader.newTexture(with: cgImage, options: nil)
-			}
+			texture = try! TextureNode.loadTexture(imageName: imageName, device: device)
 		}
 		
 		let samplerDescriptor = MTLSamplerDescriptor()
@@ -251,5 +230,30 @@ class TextureNode: Node {
 		encoder.setFragmentSamplerState(colorSamplerState, at: 0)
 		
 		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: VertextCount)
+	}
+}
+
+// MARK: Texture Cache
+extension TextureNode {
+	static var textureCache = [String: MTLTexture]()
+	class func loadTexture(imageName: String, device: MTLDevice) throws -> MTLTexture? {
+		if let texture = textureCache[imageName] {
+			return texture
+		
+		}
+		guard let image = Image(named: imageName) else { return nil }
+		guard let cgImage = TextureNode.convert(image: image) else { return nil }
+		
+		if TextureNode.textureLoader == nil {
+			TextureNode.textureLoader = MTKTextureLoader(device: device)
+		}
+		
+		if let textureLoader = TextureNode.textureLoader {
+			let texture = try textureLoader.newTexture(with: cgImage, options: nil)
+			textureCache[imageName] = texture
+			return texture
+		}
+		
+		return nil
 	}
 }
