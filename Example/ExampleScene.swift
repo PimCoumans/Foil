@@ -17,7 +17,6 @@ class ExampleScene: Scene {
 	
 	override func didMoveToRenderView() {
 		guard let renderView = renderView else { return }
-		let image = Image(named: "pim")
 		renderView.screen.zoomScale = 60
 		
 		let rootNode = Node()
@@ -25,8 +24,7 @@ class ExampleScene: Scene {
 		rootNode.scale = CGSize(width: 10, height: 10)
 		addChild(rootNode)
 		
-		
-		if let image = image, let textureNode = TextureNode(image: image, size:CGSize(width:2, height:2)) {
+		if let textureNode = TextureNode(imageName: "pim", size:CGSize(width:2, height:2)) {
 			textureNode.position = CGPoint(x: 0, y: 0)
 			self.textureNode = textureNode
 			rootNode.addChild(textureNode)
