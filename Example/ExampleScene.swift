@@ -24,7 +24,7 @@ class ExampleScene: Scene {
 		rootNode.scale = CGSize(width: 10, height: 10)
 		addChild(rootNode)
 		
-		if let textureNode = TextureNode(imageName: "pim", size:CGSize(width:2, height:2)) {
+		if let textureNode = TextureNode(name: "pim", size:CGSize(width:2, height:2)) {
 			textureNode.position = CGPoint(x: 0, y: 0)
 			self.textureNode = textureNode
 			rootNode.addChild(textureNode)
