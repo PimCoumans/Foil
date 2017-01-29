@@ -85,7 +85,7 @@ class TextureNode: Node {
 	}
 	
 	init?(name imageName: String, size: CGSize) {
-		self.imageName = name
+		self.imageName = imageName
 		self.size = size
 		
 		super.init()
