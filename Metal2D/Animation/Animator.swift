@@ -81,22 +81,32 @@ extension Animation: Equatable {
 
 struct Property: RawRepresentable, Equatable, Hashable {
     
-    var rawValue: String
-    var index: Int
+    let rawValue: String
+    let index: Int
+	let isRelative: Bool
     
     init(rawValue: Property.RawValue) {
         self.rawValue = rawValue
-        self.index = 0
+        self.index = -1
+		self.isRelative = false
     }
     
-    init(_ rawValue: Property.RawValue, at index: Int) {
+	init(_ rawValue: Property.RawValue, at index: Int = -1, relative: Bool = false) {
         self.rawValue = rawValue
         self.index = index
+		self.isRelative = relative
     }
     
     static var position: Property = Property(rawValue:"position")
-    static let scale: Property = Property(rawValue:"scale")
+	static var positionX: Property = Property(rawValue: "positionX")
+	static var positionY: Property = Property(rawValue: "positionY")
+	
+	static let scale: Property = Property(rawValue:"scale")
+	static var scaleWidth: Property = Property(rawValue: "scaleWidth")
+	static var scaleHeight: Property = Property(rawValue: "scaleHeight")
+	
     static let rotation: Property = Property(rawValue:"rotation")
+	static let relativeRotation: Property = Property("relativeRotation", relative: true)
     
     var hashValue: Int {
         return rawValue.hash
@@ -130,8 +140,12 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	}
 	
 	override func update(delta: TimeInterval) {
-		if startValue == nil && (!isRunning || progressedTime == 0) {
+		if startValue == nil && (!isRunning || abs(progressedTime) <= delta) {
 			startValue = target?.get(property)
+		}
+		let totalTime = progressedTime + delta
+		if property.isRelative && repeats && totalTime > duration {
+			self.startValue = target?.get(property)
 		}
 		super.update(delta: delta)
 	}
@@ -143,8 +157,9 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	
 	override func didUpdate(delta: Double) {
 		if let value = startValue {
+			let endValue = property.isRelative ? value + self.endValue : self.endValue
 			let currentValue = value.lerped(to: endValue, t: progress)
-			target?.set(property, value: currentValue)
+			target?.update(property, with: currentValue)
 		}
 	}
 }
@@ -257,6 +272,10 @@ class Animator {
 }
 
 extension Node {
+	
+	func update<T:Lerpable>(_ property:Property, with value:T) {
+		set(property, value: value)
+	}
 	
 	func animations(for property:Property? = nil) -> [Animation] {
 		return Animator.shared.runningAnimations.filter({ animation -> Bool in

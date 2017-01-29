@@ -21,10 +21,11 @@ struct Color {
 	var blue: Float
 	var alpha: Float = 1
 	
-	init(red: Float, green: Float, blue: Float) {
+	init(red: Float, green: Float, blue: Float, alpha: Float = 1) {
 		self.red = red
 		self.green = green
 		self.blue = blue
+		self.alpha = alpha
 	}
 }
 
@@ -119,6 +120,10 @@ extension Color {
 
 // Animation
 extension Color: Lerpable {
+	internal static func +(lhs: Color, rhs: Color) -> Color {
+		return Color(red: lhs.red + rhs.red, green: lhs.green + rhs.green, blue: lhs.blue + rhs.blue, alpha: lhs.alpha + rhs.alpha)
+	}
+
 	mutating func lerp(to color: Color, t: Double) {
 		if self == color {
 			return

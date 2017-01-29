@@ -131,9 +131,19 @@ class Node: Interactable {
 		switch property {
 		case Property.position:
 			position = value as? CGPoint ?? position
+		case Property.positionX:
+			position.x = value as? CGFloat ?? position.x
+		case Property.positionY:
+			position.y = value as? CGFloat ?? position.y
 		case Property.scale:
 			scale = value as? CGSize ?? scale
+		case Property.scaleWidth:
+			scale.width = value as? CGFloat ?? scale.width
+		case Property.scaleHeight:
+			scale.height = value as? CGFloat ?? scale.height
 		case Property.rotation:
+			rotation = value as? CGFloat ?? rotation
+		case Property.relativeRotation:
 			rotation = value as? CGFloat ?? rotation
 		default: break
 		}
@@ -143,9 +153,17 @@ class Node: Interactable {
 		switch property {
 		case Property.position:
 			return position as? T
+		case Property.positionX:
+			return position.x as? T
+		case Property.positionY:
+			return position.y as? T
 		case Property.scale:
 			return scale as? T
-		case Property.rotation:
+		case Property.scaleWidth:
+			return scale.width as? T
+		case Property.scaleHeight:
+			return scale.height as? T
+		case Property.rotation, Property.relativeRotation:
 			return rotation as? T
 		default:
 			return nil

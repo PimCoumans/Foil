@@ -11,6 +11,7 @@ import Foundation
 protocol Lerpable: Equatable {
 	mutating func lerp(to: Self, t: Double)
 	func lerped(to: Self, t: Double) -> Self
+	static func + (lhs: Self, rhs: Self) -> Self
 }
 
 extension Lerpable {

@@ -41,7 +41,7 @@ class ExampleScene: Scene {
 			rootNode.animate(.position, to: CGFloat.pi * -2, duration: 6, curve: Linear()).loop()
 			
 			Animator.animate(duration: 2, curve: ElasticOut()) {
-				textureNode.animate(.rotation, to: CGFloat.pi * 2).loop()
+				textureNode.animate(.relativeRotation, to: CGFloat.pi / 2).loop()
 			}
             
 			SequenceAnimation(curve: Spring(damping: 15, mass: 1.0, stiffness: 500, velocity: 0), duration: 2).animate {
