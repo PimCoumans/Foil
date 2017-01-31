@@ -34,6 +34,8 @@ class Scene: Node {
 		return .zero
 	}
 	
+	var clearColor: Color = .black
+	
 	func cancelInteraction() {
 		touchCancelled()
 	}
@@ -70,4 +72,26 @@ class Scene: Node {
 	func willMoveToRenderView(renderView:RenderView?) {}
 	func didMoveToRenderView() {}
 	
+	override func get<T : Lerpable>(_ property: Property) -> T? {
+		switch property {
+		case Property.clearColor:
+			return clearColor as? T
+		default:
+			return super.get(property)
+		}
+	}
+	
+	override func set<T : Lerpable>(_ property: Property, value: T) {
+		switch property {
+		case Property.clearColor:
+			clearColor = value as? Color ?? clearColor
+		default:
+			super.set(property, value: value)
+		}
+	}
+	
+}
+
+extension Property {
+	static var clearColor = Property(rawValue: "clearColor")
 }
