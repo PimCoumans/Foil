@@ -11,7 +11,7 @@ import QuartzCore
 import GLKit
 import MetalKit
 
-class Node: Interactable {
+class Node: Interactable, Animatable {
 	
 	// MARK: Geometry
 	// Position and scale are based on the parents local coordinate system
@@ -126,7 +126,7 @@ class Node: Interactable {
 	func touchEnded(atPosition position: CGPoint, delta: CGPoint) {}
 	func touchCancelled() {}
 	
-	// MARK: Animation support
+	// MARK: - Animatable
 	func set<T:Lerpable>(_ property: Property, value: T) {
 		switch property {
 		case Property.position:
@@ -169,7 +169,6 @@ class Node: Interactable {
 			return nil
 		}
 	}
-	
 }
 
 extension Node: Hashable {

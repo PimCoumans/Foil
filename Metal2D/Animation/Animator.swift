@@ -118,20 +118,20 @@ struct Property: RawRepresentable, Equatable, Hashable {
 }
 
 protocol TargetPropertyContainer {
-	weak var target: Node? { get }
+	weak var target: Animatable? { get }
 	var property: Property { get }
 }
 
 class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	
 	private(set)
-	weak var target: Node?
+	weak var target: Animatable?
 	
 	let property: Property
 	var startValue: T?
 	let endValue: T
 	
-	init(on target: Node, property: Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
+	init(on target: Animatable, property: Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
 		self.target = target
 		self.property = property
 		self.startValue = startValue
@@ -265,6 +265,19 @@ class Animator {
 		shared.dequeueAnimations()
 	}
 	
+	@discardableResult class func animate<T:Lerpable>(_ target: Animatable, with property: Property, from startValue: T?, to endValue: T, duration: TimeInterval?, curve: AnimationCurve?) -> Animation {
+		let context = Animator.shared.animationContext
+		guard let animationDuration = duration ?? context?.duration,
+			let animationCurve = curve ?? context?.curve else {
+				preconditionFailure("no duration or curve set or available")
+		}
+		
+		let animation = PropertyAnimation(on: target, property: property, startValue:startValue, endValue:endValue, curve: animationCurve, duration: animationDuration)
+		Animator.start(animation)
+		return animation
+		
+	}
+	
 	class func start(_ animation: Animation) {
 		shared.queuedAnimations.append(animation)
 		if shared.animationContext == nil {
@@ -292,7 +305,21 @@ class Animator {
 	}
 }
 
-extension Node {
+protocol Animatable: class {
+	
+	func update<T:Lerpable>(_ property:Property, with value:T)
+	func set<T:Lerpable>(_ property: Property, value: T)
+	func get<T:Lerpable>(_ property: Property) -> T?
+	
+	func animations() -> [Animation]
+	func animations(for property:Property?) -> [Animation]
+	func cancelAnimations()
+	func cancelAnimations(for property:Property?)
+	
+	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T?, to endValue: T, duration: TimeInterval?, curve: AnimationCurve?) -> Animation
+}
+
+extension Animatable {
 	
 	func update<T:Lerpable>(_ property:Property, with value:T) {
 		set(property, value: value)
@@ -300,7 +327,7 @@ extension Node {
 	
 	func animations(for property:Property? = nil) -> [Animation] {
 		return Animator.shared.runningAnimations.filter({ animation -> Bool in
-			guard let animation = animation as? TargetPropertyContainer, animation.target == self else {
+			guard let animation = animation as? TargetPropertyContainer, animation.target === self else {
 				return false
 			}
 			guard let property = property else {
@@ -310,25 +337,25 @@ extension Node {
 		})
 	}
 	
+	func animations() -> [Animation] {
+		return animations(for: nil)
+	}
+	
 	func cancelAnimations(for property:Property? = nil) {
 		for animation in animations(for: property) {
-			animation.isRunning = false
+			animation.stop()
 			if let index = Animator.shared.animations.index(of: animation) {
 				Animator.shared.animations.remove(at: index)
 			}
 		}
 	}
 	
+	func cancelAnimations() {
+		return cancelAnimations(for: nil)
+	}
+	
 	@discardableResult func animate<T:Lerpable>(_ property: Property, from startValue: T? = nil, to endValue: T, duration: TimeInterval? = nil, curve: AnimationCurve? = nil) -> Animation {
 		cancelAnimations(for: property)
-		let context = Animator.shared.animationContext
-		guard let animationDuration = duration ?? context?.duration,
-			let animationCurve = curve ?? context?.curve else {
-				preconditionFailure("no duration or curve set or available")
-		}
-		
-		let animation = PropertyAnimation(on: self, property: property, startValue:startValue, endValue:endValue, curve: animationCurve, duration: animationDuration)
-		Animator.start(animation)
-		return animation
+		return Animator.animate(self, with: property, from: startValue, to: endValue, duration: duration, curve: curve)
 	}
 }
