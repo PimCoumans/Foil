@@ -90,7 +90,7 @@ extension Color {
 	}
 	
 	static var black: Color {
-		return Color(red: 1, green: 1, blue: 1)
+		return Color(red: 0, green: 0, blue: 0)
 	}
 	
 	static var white: Color {
@@ -134,6 +134,7 @@ extension Color: Lerpable {
 		alpha.lerp(to: color.alpha, t: t)
 	}
 }
+
 fileprivate extension Float {
 	mutating func lerp(to float: Float, t: Double) {
 		if self == float {
@@ -144,6 +145,6 @@ fileprivate extension Float {
 			self = float
 			return
 		}
-		self += difference * Float(t)
+		self += Float(Double(difference) * t)
 	}
 }
