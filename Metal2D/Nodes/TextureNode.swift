@@ -93,8 +93,15 @@ class TextureNode: Node {
 	
 	private var initializedPipeline = false
 	
-	override func willMoveToScene(_ scene: Scene?) {
-		guard let renderView = scene?.renderView, let device = renderView.device, initializedPipeline == false else { return }
+	@discardableResult func initializePipeline() -> Bool {
+		
+		if initializedPipeline {
+			return true
+		}
+		
+		guard let renderView = scene?.renderView, let device = renderView.device else {
+			return false
+		}
 		
 		let vertexSize = MemoryLayout<Vertex>.size
 		vertexBuffer = device.makeBuffer(length:vertexSize * VertextCount * MaxBuffers)
@@ -109,7 +116,13 @@ class TextureNode: Node {
 		colorBuffer.label = "colors"
 		
 		if texture == nil {
-			texture = try! TextureNode.loadTexture(imageName: imageName, device: device)
+			do {
+				texture = try TextureNode.loadTexture(imageName: imageName, device: device)
+			}
+			catch {
+				print(error)
+				return false
+			}
 		}
 		
 		let samplerDescriptor = MTLSamplerDescriptor()
@@ -137,17 +150,24 @@ class TextureNode: Node {
 		renderPipelineDescriptor.vertexFunction = renderView.library.makeFunction(name: "image_vertex")!
 		renderPipelineDescriptor.fragmentFunction = renderView.library.makeFunction(name: "image_fragment")!
 		
-		renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-		renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
-		renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
-		renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
-		renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
-		renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
-		renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
-		renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+		if let renderBufferAttachment = renderPipelineDescriptor.colorAttachments[0] {
+			renderBufferAttachment.pixelFormat = .bgra8Unorm
+			renderBufferAttachment.isBlendingEnabled = true
+			renderBufferAttachment.rgbBlendOperation = .add
+			renderBufferAttachment.alphaBlendOperation = .add
+			renderBufferAttachment.sourceRGBBlendFactor = .destinationAlpha
+			renderBufferAttachment.sourceAlphaBlendFactor = .destinationAlpha
+			renderBufferAttachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+			renderBufferAttachment.destinationAlphaBlendFactor = .oneMinusBlendAlpha
+		}
 		
 		self.renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
 		initializedPipeline = true
+		return true
+	}
+	
+	override func willMoveToScene(_ scene: Scene?) {
+		initializePipeline()
 	}
 	
 	static var textureLoader:MTKTextureLoader? = nil
@@ -199,7 +219,7 @@ class TextureNode: Node {
 	
 	override func render(with context:RenderContext) {
 		
-		guard initializedPipeline else {
+		guard initializePipeline() else {
 			return
 		}
 		
@@ -237,10 +257,11 @@ class TextureNode: Node {
 extension TextureNode {
 	static var textureCache = [String: MTLTexture]()
 	class func loadTexture(imageName: String, device: MTLDevice) throws -> MTLTexture? {
+		
 		if let texture = textureCache[imageName] {
 			return texture
-		
 		}
+		
 		guard let image = Image(named: imageName) else { return nil }
 		guard let cgImage = TextureNode.convert(image: image) else { return nil }
 		
