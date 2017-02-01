@@ -131,11 +131,14 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	var startValue: T?
 	let endValue: T
 	
+	private let usesStartValue: Bool
+	
 	init(on target: Animatable, property: Property, startValue: T? = nil, endValue: T, curve: AnimationCurve, duration: TimeInterval, repeats: Bool = false) {
 		self.target = target
 		self.property = property
 		self.startValue = startValue
 		self.endValue = endValue
+		self.usesStartValue = startValue != nil
 		super.init(curve: curve, duration: duration, repeats: repeats)
 	}
 	
@@ -151,7 +154,9 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
 	}
 	
 	override func reset() -> PropertyAnimation {
-		startValue = nil
+		if !usesStartValue {
+			startValue = nil
+		}
 		return super.reset() as! PropertyAnimation
 	}
 	
