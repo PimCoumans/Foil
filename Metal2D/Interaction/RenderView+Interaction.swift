@@ -36,7 +36,8 @@ extension RenderView {
 	func touchMoved(toPoint point: CGPoint, delta:CGPoint) {
 		if let node = scene?.inputReceivingNode ?? scene {
 			let worldPosition = self.worldPosition(forScreenPosition: point)
-			let worldDelta = delta * pixelScale
+			var worldDelta = delta * pixelScale
+			worldDelta.y = -worldDelta.y
 			let localPosition = node.convert(worldPosition: worldPosition)
 			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
 			node.touchMoved(toPosition: localPosition, delta: localDelta)
@@ -46,7 +47,8 @@ extension RenderView {
 	func touchEnded(atPoint point:CGPoint, delta:CGPoint) {
 		if let node = scene?.inputReceivingNode ?? scene {
 			let worldPosition = self.worldPosition(forScreenPosition: point)
-			let worldDelta = delta * pixelScale
+			var worldDelta = delta * pixelScale
+			worldDelta.y = -worldDelta.y
 			let localPosition = node.convert(worldPosition: worldPosition)
 			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
 			node.touchEnded(atPosition: localPosition, delta: localDelta)
