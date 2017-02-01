@@ -204,10 +204,15 @@ class SequenceAnimation: Animation {
 	}
 	
 	@discardableResult func closure(_ closure: @escaping () -> Void) -> Self {
-		animate {
+		return animate {
 			ClosureAnimation(closure).start()
 		}
-		return self
+	}
+	
+	@discardableResult func wait(for duration: TimeInterval) -> Self {
+		return animate {
+			Animation(curve: Linear(), duration: duration).start()
+		}
 	}
 	
 	override func update(delta: TimeInterval) {
