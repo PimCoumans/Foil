@@ -6,7 +6,7 @@
 //  Copyright © 2016 pixelrock. All rights reserved.
 //
 
-import QuartzCore
+import CoreGraphics
 #if os(iOS)
 	import UIKit
 #elseif os(OSX)
@@ -63,4 +63,26 @@ class Screen {
 		let minSide = min(nativeScreenSize.width, nativeScreenSize.height)
 		return CGSize(width: nativeScreenSize.width / minSide, height: nativeScreenSize.height / minSide)
 	}
+}
+
+extension Screen: Animatable {
+	func set<T : Lerpable>(_ property: Property, value: T) {
+		switch property {
+		case Property.zoomScale:
+			zoomScale = value as? CGFloat ?? zoomScale
+		default: break
+		}
+	}
+	func get<T : Lerpable>(_ property: Property) -> T? {
+		switch property {
+		case Property.zoomScale:
+			return zoomScale as? T
+		default:
+			return nil
+		}
+	}
+}
+
+extension Property {
+	static let zoomScale = Property("zoomScale")
 }
