@@ -6,8 +6,8 @@
 //  Copyright © 2017 pixelrock. All rights reserved.
 //
 
-import Foundation
 import CoreGraphics
+import Foundation
 
 class Animation {
 	

@@ -6,7 +6,6 @@
 //  Copyright © 2017 pixelrock. All rights reserved.
 //
 
-import Foundation
 import CoreGraphics
 
 protocol Lerpable: Equatable {
@@ -53,13 +52,13 @@ struct EaseOut: AnimationCurve {
 
 struct ElasticIn: AnimationCurve {
 	func value(for p: Double) -> Double {
-		return sin(13 * M_PI_2 * p) * pow(2, 10 * (p - 1));
+		return sin(13 * (Double.pi / 2) * p) * pow(2, 10 * (p - 1));
 	}
 }
 
 struct ElasticOut: AnimationCurve {
 	func value(for p: Double) -> Double {
-		return sin(-13 * M_PI_2 * (p + 1)) * pow(2, -10 * p) + 1;
+		return sin(-13 * (Double.pi / 2) * (p + 1)) * pow(2, -10 * p) + 1;
 	}
 }
 

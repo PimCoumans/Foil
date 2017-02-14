@@ -99,7 +99,10 @@ class RenderView: MTKView, MTKViewDelegate {
 				self.clearColor = MTLClearColorMake(Double(clearColor.red), Double(clearColor.green), Double(clearColor.blue), 1)
 			}
 			
+			#if arch(i386) || arch(x86_64)
+			#else
 			renderPassDescriptor.colorAttachments[0].texture = drawable.texture
+			#endif
 			renderPassDescriptor.colorAttachments[0].clearColor = clearColor
 			renderPassDescriptor.colorAttachments[0].loadAction = .clear
 			renderPassDescriptor.colorAttachments[0].storeAction = .store
