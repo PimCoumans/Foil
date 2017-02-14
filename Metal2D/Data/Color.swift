@@ -98,15 +98,15 @@ extension Color {
 	}
 	
 	static var red: Color {
-		return Color(red: 1, green: 1, blue: 1)
+		return Color(red: 1, green: 0, blue: 0)
 	}
 	
 	static var green: Color {
-		return Color(red: 1, green: 1, blue: 1)
+		return Color(red: 0, green: 1, blue: 0)
 	}
 	
 	static var blue: Color {
-		return Color(red: 1, green: 1, blue: 1)
+		return Color(red: 0, green: 0, blue: 1)
 	}
 	
 	static var purple: Color {
