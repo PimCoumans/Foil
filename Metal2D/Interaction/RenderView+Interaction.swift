@@ -23,18 +23,19 @@ extension RenderView {
 	
 	func touchBegan(atPoint point: CGPoint) {
 		let worldPosition = self.worldPosition(forScreenPosition: point)
-		if let node = scene?.interactableNode(atPosition: worldPosition) {
+		if let node = scene?.inputReceivingNode ?? scene?.interactableNode(atPosition: worldPosition) {
 			scene?.inputReceivingNode = node
 			let localPosition = node.convert(worldPosition: worldPosition)
 			node.touchBegan(atPosition: localPosition)
 		}
 		else {
+			scene?.inputReceivingNode = scene
 			scene?.touchBegan(atPosition: worldPosition)
 		}
 	}
 	
 	func touchMoved(toPoint point: CGPoint, delta:CGPoint) {
-		if let node = scene?.inputReceivingNode ?? scene {
+		if let node = scene?.inputReceivingNode {
 			let worldPosition = self.worldPosition(forScreenPosition: point)
 			var worldDelta = delta * pixelScale
 			worldDelta.y = -worldDelta.y
@@ -45,19 +46,19 @@ extension RenderView {
 	}
 	
 	func touchEnded(atPoint point:CGPoint, delta:CGPoint) {
-		if let node = scene?.inputReceivingNode ?? scene {
+		if let node = scene?.inputReceivingNode {
+			scene?.inputReceivingNode = nil
 			let worldPosition = self.worldPosition(forScreenPosition: point)
 			var worldDelta = delta * pixelScale
 			worldDelta.y = -worldDelta.y
 			let localPosition = node.convert(worldPosition: worldPosition)
 			let localDelta = localPosition - node.convert(worldPosition: worldPosition + worldDelta)
 			node.touchEnded(atPosition: localPosition, delta: localDelta)
-			scene?.inputReceivingNode = nil
 		}
 	}
 	
 	func touchCancelled() {
-		if let node = scene?.inputReceivingNode ?? scene {
+		if let node = scene?.inputReceivingNode {
 			node.touchCancelled()
 		}
 		scene?.inputReceivingNode = nil
