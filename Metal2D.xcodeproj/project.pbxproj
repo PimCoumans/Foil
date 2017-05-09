@@ -38,7 +38,6 @@
 		3E80B2421E16A35D0005956A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80B2391E16A35D0005956A /* AppDelegate.swift */; };
 		3E80B2431E16A35D0005956A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23A1E16A35D0005956A /* Assets.xcassets */; };
 		3E80B2441E16A35D0005956A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23B1E16A35D0005956A /* LaunchScreen.storyboard */; };
-		3E80B2451E16A35D0005956A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E80B23D1E16A35D0005956A /* Main.storyboard */; };
 		3E80B2471E16A35D0005956A /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80B2401E16A35D0005956A /* GameViewController.swift */; };
 		3E8E66B21DE8781600DBB707 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E8E66B11DE8781600DBB707 /* Metal.framework */; };
 		3E8E66B41DE8781600DBB707 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E8E66B31DE8781600DBB707 /* MetalKit.framework */; };
@@ -102,7 +101,6 @@
 		3E80B2391E16A35D0005956A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E80B23A1E16A35D0005956A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E80B23C1E16A35D0005956A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		3E80B23E1E16A35D0005956A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3E80B2401E16A35D0005956A /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		3E80B2411E16A35D0005956A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E8E66AE1DE8781600DBB707 /* Metal2DiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metal2DiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,7 +187,6 @@
 				3E80B2391E16A35D0005956A /* AppDelegate.swift */,
 				3E80B23A1E16A35D0005956A /* Assets.xcassets */,
 				3E80B23B1E16A35D0005956A /* LaunchScreen.storyboard */,
-				3E80B23D1E16A35D0005956A /* Main.storyboard */,
 				3E80B2401E16A35D0005956A /* GameViewController.swift */,
 				3E80B2411E16A35D0005956A /* Info.plist */,
 			);
@@ -408,7 +405,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E80B2451E16A35D0005956A /* Main.storyboard in Resources */,
 				3E80B2431E16A35D0005956A /* Assets.xcassets in Resources */,
 				3E80B2441E16A35D0005956A /* LaunchScreen.storyboard in Resources */,
 			);
@@ -522,14 +518,6 @@
 				3E80B23C1E16A35D0005956A /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		3E80B23D1E16A35D0005956A /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3E80B23E1E16A35D0005956A /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
