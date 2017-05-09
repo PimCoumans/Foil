@@ -15,7 +15,7 @@ import CoreGraphics
 
 class Screen {
 	
-	let renderView:RenderView
+	weak var renderView: RenderView?
 	
 	init(renderView:RenderView) {
 		self.renderView = renderView

@@ -131,8 +131,6 @@ class LineNode : Node {
 			return
 		}
 		
-		let encoder = context.commandEncoder
-		
 		let vertexArray = (vertexBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Vertex.self, capacity: 256 / MemoryLayout<Vertex>.stride)
 		for index in 0 ..< vertices.count {
 			vertexArray[index] = vertices[index]
@@ -149,13 +147,15 @@ class LineNode : Node {
 		let uniformsArray = (uniformsBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Uniforms.self, capacity: 256 / MemoryLayout<Uniforms>.stride)
 		uniformsArray[0] = uniforms
 		
-		encoder.setRenderPipelineState(renderPipelineState)
-		
-		encoder.setVertexBuffer(vertexBuffer, offset: 256 * context.bufferIndex, at: 0)
-		encoder.setVertexBuffer(vertexColorBuffer, offset: 256 * context.bufferIndex, at: 1)
-		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 2)
-		
-		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+		if let encoder = context.commandEncoder {
+			encoder.setRenderPipelineState(renderPipelineState)
+			
+			encoder.setVertexBuffer(vertexBuffer, offset: 256 * context.bufferIndex, at: 0)
+			encoder.setVertexBuffer(vertexColorBuffer, offset: 256 * context.bufferIndex, at: 1)
+			encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 2)
+			
+			encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+		}
 	}
 	
 	override func get<T : Lerpable>(_ property: Property) -> T? {

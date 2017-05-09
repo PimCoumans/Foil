@@ -12,7 +12,7 @@
 	import AppKit
 #endif
 
-extension RenderView {
+extension MetalRenderView {
 	
 	var pixelScale:CGFloat {
 		let screenSize = screen.bounds.size

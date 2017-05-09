@@ -12,7 +12,7 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
         (view as? RenderView)?.scene = ExampleScene()
     }
 }

@@ -55,7 +55,12 @@ class TextureNode: Node {
 	
 	var imageName: String {
 		didSet {
-			guard let device = scene?.renderView?.device else { return }
+			guard let device = scene?.renderView?.device else {
+				if !MetalRenderView.metalAvailable {
+					self.glTexture = try! TextureNode.glLoadTexture(imageName: imageName)
+				}
+				return
+			}
 			self.texture = try! TextureNode.loadTexture(imageName: imageName, device: device)
 		}
 	}
@@ -71,7 +76,7 @@ class TextureNode: Node {
 			}
 		#elseif os(iOS)
 			if let cgImage = image.cgImage {
-				if let context = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+				if let context = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue) {
 					context.scaleBy(x: 1, y: -1)
 					context.translateBy(x: 0, y: CGFloat(cgImage.height))
 					context.draw(cgImage, in: context.boundingBoxOfClipPath)
@@ -223,8 +228,6 @@ class TextureNode: Node {
 			return
 		}
 		
-		let encoder = context.commandEncoder
-		
 		let vertexArray = UnsafeMutablePointer<Vertex>(OpaquePointer(vertexBuffer.contents()))
 		let vertices = self.vertices
 		let vertexOffset = context.bufferIndex * VertextCount
@@ -240,16 +243,80 @@ class TextureNode: Node {
 		let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Color.self, capacity: 256 / (MemoryLayout<Color>.stride))
 		componentArray[0] = color
 		
-		encoder.setRenderPipelineState(renderPipelineState)
+		if let encoder = context.commandEncoder {			
+			encoder.setRenderPipelineState(renderPipelineState)
+			
+			encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, at: 0)
+			encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 1)
+			encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, at: 2)
+			
+			encoder.setFragmentTexture(texture, at: 0)
+			encoder.setFragmentSamplerState(colorSamplerState, at: 0)
+			
+			encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: VertextCount)
+		}
+	}
+	
+	
+	// OpenGL support
+	var glEffect: GLKBaseEffect!
+	var glTexture: GLKTextureInfo!
+	
+	private var glInitializedPipeline = false
+	func glInitializePipeline() -> Bool {
+		guard glInitializedPipeline == false else {
+			return true
+		}
+		glEffect = GLKBaseEffect()
 		
-		encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, at: 0)
-		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 1)
-		encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, at: 2)
+		if glTexture == nil {
+			do {
+				glTexture = try TextureNode.glLoadTexture(imageName: imageName)
+			}
+			catch {
+				print(error)
+				return false
+			}
+		}
 		
-		encoder.setFragmentTexture(texture, at: 0)
-		encoder.setFragmentSamplerState(colorSamplerState, at: 0)
 		
-		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: VertextCount)
+		let vertexBuffer: GLuint
+		glGenBuffers(1, &vertexBuffer)
+		glBindBuffer(GLenum(GL_ARRAY_BUFFER), vertexBuffer)
+		glBufferData(GLenum(GL_ARRAY_BUFFER), MemoryLayout<Vertex>.size, vertices, GLenum(GL_STATIC_DRAW))
+		
+		let indexBuffer: GLuint
+		glGenBuffers(1, &indexBuffer)
+		glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
+		glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), sizeof(Indices), Indices, GLenum(GL_STATIC_DRAW))
+		
+		return true
+	}
+	
+	override func glRender(with context: RenderContext) {
+		guard glInitializePipeline() else {
+			return
+		}
+		
+		self.glEffect.texture2d0.name = glTexture.name
+		self.glEffect.texture2d0.enabled = GLboolean(true)
+		self.glEffect.transform.projectionMatrix = context.transform
+		
+		self.glEffect.prepareToDraw()
+		
+		let position = GLuint(GLKVertexAttrib.position.rawValue)
+		let textureCoord = GLuint(GLKVertexAttrib.texCoord0.rawValue)
+		glEnableVertexAttribArray(position)
+		glEnableVertexAttribArray(textureCoord)
+		
+		let pointer = UnsafePointer<GLfloat>(bitPattern: 0)
+		glVertexAttribPointer(position, 2, GLenum(GL_FLOAT), GLboolean(false), GLsizei(MemoryLayout<Vertex>.size), pointer)
+		glVertexAttribPointer(textureCoord, 2, GLenum(GL_FLOAT), GLboolean(false), GLsizei(MemoryLayout<Vertex>.size), pointer)
+		
+		glEnableVertexAttribArray(GLuint(GLKVertexAttrib.position.rawValue))
+		glVertexAttribPointer(GLuint(GLKVertexAttrib.position.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 24, UnsafeRawPointer(bitPattern: 0))
+		glEnableVertexAttribArray(GLuint(GLKVertexAttrib.normal.rawValue))
+		glVertexAttribPointer(GLuint(GLKVertexAttrib.normal.rawValue), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), 24, UnsafeRawPointer(bitPattern: 12))
 	}
 }
 
@@ -276,5 +343,24 @@ extension TextureNode {
 		}
 		
 		return nil
+	}
+}
+
+// MARK: GL Texture Cache
+extension TextureNode {
+	static var glTextureCache = [String: GLKTextureInfo]()
+	class func glLoadTexture(imageName: String) throws -> GLKTextureInfo? {
+		
+		if let texture = glTextureCache[imageName] {
+			return texture
+		}
+		
+		guard let image = Image(named: imageName) else { return nil }
+		guard let cgImage = TextureNode.convert(image: image) else { return nil }
+		
+//		let texture = try GLKTextureLoader.texture(withName: imageName + ".png", scaleFactor: 1, bundle: nil, options: nil)
+		let texture = try GLKTextureLoader.texture(with: cgImage, options: nil)
+		glTextureCache[imageName] = texture
+		return texture
 	}
 }

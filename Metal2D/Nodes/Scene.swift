@@ -20,6 +20,15 @@ class Scene: Node {
 		}
 	}
 	
+	weak var glRenderView: GLRenderView? {
+		willSet {
+			willMoveToRenderView(renderView: newValue)
+		}
+		didSet {
+			didMoveToRenderView()
+		}
+	}
+	
 	weak var inputReceivingNode: Node? = nil
 	var renderInZOrder: Bool = false
 	
@@ -69,7 +78,7 @@ class Scene: Node {
 		}
 	}
 	
-	func willMoveToRenderView(renderView:RenderView?) {}
+	func willMoveToRenderView(renderView: RenderView?) {}
 	func didMoveToRenderView() {}
 	
 	override func get<T : Lerpable>(_ property: Property) -> T? {

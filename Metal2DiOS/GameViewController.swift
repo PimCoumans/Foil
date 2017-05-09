@@ -11,7 +11,7 @@ import UIKit
 class GameViewController:UIViewController {
     
     override func viewDidLoad() {
-        (view as? RenderView)?.scene = ExampleScene()
+		(view as? RenderView)?.scene = ExampleScene()
     }
     
     override var shouldAutorotate: Bool {

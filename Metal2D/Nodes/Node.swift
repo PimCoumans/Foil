@@ -94,6 +94,19 @@ class Node: Interactable, Animatable {
 		}
 	}
 	
+	// MARK: OpenGL Rendering
+	func glRender(with context: RenderContext) {
+		
+	}
+	
+	func glRenderRecursively(with context: RenderContext) {
+		guard !hidden else { return }
+		glRender(with: context)
+		for node in children {
+			node.glRenderRecursively(with: context)
+		}
+	}
+	
 	// MARK: Interactable
 	var handlesInput: Bool { return false }
 	
