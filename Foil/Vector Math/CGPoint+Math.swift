@@ -1,6 +1,6 @@
 //
 //  CGPoint+Math.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 02/01/17.
 //  Copyright © 2017 pixelrock. All rights reserved.

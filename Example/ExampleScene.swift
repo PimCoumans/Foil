@@ -1,6 +1,6 @@
 //
 //  ExampleScene.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 30/12/16.
 //  Copyright © 2016 pixelrock. All rights reserved.

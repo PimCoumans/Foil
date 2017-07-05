@@ -1,6 +1,6 @@
 //
 //  Interpolatable.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 25/01/17.
 //  Copyright © 2017 pixelrock. All rights reserved.

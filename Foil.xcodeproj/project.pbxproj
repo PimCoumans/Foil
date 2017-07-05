@@ -44,7 +44,7 @@
 		3E8E66B41DE8781600DBB707 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E8E66B31DE8781600DBB707 /* MetalKit.framework */; };
 		3E8E66B61DE8781600DBB707 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E8E66B51DE8781600DBB707 /* ModelIO.framework */; };
 		3E8E66BD1DE8781600DBB707 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66BC1DE8781600DBB707 /* Shaders.metal */; };
-		3E8E66D01DE8781700DBB707 /* Metal2DTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66CF1DE8781700DBB707 /* Metal2DTests.swift */; };
+		3E8E66D01DE8781700DBB707 /* FoilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66CF1DE8781700DBB707 /* FoilTests.swift */; };
 		3E8E66DC1DE8787500DBB707 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66DB1DE8787500DBB707 /* Node.swift */; };
 		3E8E66DD1DE8787500DBB707 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66DB1DE8787500DBB707 /* Node.swift */; };
 		3E8E66DF1DE8789800DBB707 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8E66DE1DE8789800DBB707 /* Scene.swift */; };
@@ -73,14 +73,14 @@
 			containerPortal = 3E8E66A61DE8781600DBB707 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 3E7660331E155B6F00C302BE;
-			remoteInfo = Metal2DMac;
+			remoteInfo = FoilMac;
 		};
 		3EBF1B201E196AE200608E9C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3E8E66A61DE8781600DBB707 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 3E8E66AD1DE8781600DBB707;
-			remoteInfo = Metal2DiOS;
+			remoteInfo = FoiliOS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -89,7 +89,7 @@
 		3E2AA1001E16CF2700912C7F /* ExampleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleScene.swift; sourceTree = "<group>"; };
 		3E65C0BD1E38E84B0083BBE2 /* AnimationCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationCurve.swift; sourceTree = "<group>"; };
 		3E76602E1E15294900C302BE /* RenderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
-		3E7660341E155B6F00C302BE /* Metal2DMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metal2DMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E7660341E155B6F00C302BE /* FoilMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoilMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7660361E155B6F00C302BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E7660381E155B6F00C302BE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3E76603D1E155B6F00C302BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -105,13 +105,13 @@
 		3E80B23E1E16A35D0005956A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3E80B2401E16A35D0005956A /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		3E80B2411E16A35D0005956A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3E8E66AE1DE8781600DBB707 /* Metal2DiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metal2DiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E8E66AE1DE8781600DBB707 /* FoiliOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoiliOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E8E66B11DE8781600DBB707 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		3E8E66B31DE8781600DBB707 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		3E8E66B51DE8781600DBB707 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		3E8E66BC1DE8781600DBB707 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		3E8E66CB1DE8781700DBB707 /* Metal2DTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Metal2DTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3E8E66CF1DE8781700DBB707 /* Metal2DTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metal2DTests.swift; sourceTree = "<group>"; };
+		3E8E66CB1DE8781700DBB707 /* FoilTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E8E66CF1DE8781700DBB707 /* FoilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoilTests.swift; sourceTree = "<group>"; };
 		3E8E66D11DE8781700DBB707 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E8E66DB1DE8787500DBB707 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; usesTabs = 1; };
 		3E8E66DE1DE8789800DBB707 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; usesTabs = 1; };
@@ -163,7 +163,7 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
-		3E7660351E155B6F00C302BE /* Metal2DMac */ = {
+		3E7660351E155B6F00C302BE /* FoilMac */ = {
 			isa = PBXGroup;
 			children = (
 				3E7660361E155B6F00C302BE /* AppDelegate.swift */,
@@ -171,7 +171,7 @@
 				3E76603C1E155B6F00C302BE /* Main.storyboard */,
 				3E76603F1E155B6F00C302BE /* Info.plist */,
 			);
-			path = Metal2DMac;
+			path = FoilMac;
 			sourceTree = "<group>";
 		};
 		3E7E02721E1AA4690000165D /* Vector Math */ = {
@@ -183,7 +183,7 @@
 			path = "Vector Math";
 			sourceTree = "<group>";
 		};
-		3E80B2381E16A35D0005956A /* Metal2DiOS */ = {
+		3E80B2381E16A35D0005956A /* FoiliOS */ = {
 			isa = PBXGroup;
 			children = (
 				3E80B2391E16A35D0005956A /* AppDelegate.swift */,
@@ -193,17 +193,17 @@
 				3E80B2401E16A35D0005956A /* GameViewController.swift */,
 				3E80B2411E16A35D0005956A /* Info.plist */,
 			);
-			path = Metal2DiOS;
+			path = FoiliOS;
 			sourceTree = "<group>";
 		};
 		3E8E66A51DE8781600DBB707 = {
 			isa = PBXGroup;
 			children = (
-				3E8E66B71DE8781600DBB707 /* Metal2D */,
+				3E8E66B71DE8781600DBB707 /* Foil */,
 				3E2AA0FF1E16CF0E00912C7F /* Example */,
-				3E80B2381E16A35D0005956A /* Metal2DiOS */,
-				3E8E66CE1DE8781700DBB707 /* Metal2DTests */,
-				3E7660351E155B6F00C302BE /* Metal2DMac */,
+				3E80B2381E16A35D0005956A /* FoiliOS */,
+				3E8E66CE1DE8781700DBB707 /* FoilTests */,
+				3E7660351E155B6F00C302BE /* FoilMac */,
 				3E8E66B01DE8781600DBB707 /* Frameworks */,
 				3E8E66AF1DE8781600DBB707 /* Products */,
 			);
@@ -212,9 +212,9 @@
 		3E8E66AF1DE8781600DBB707 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3E8E66AE1DE8781600DBB707 /* Metal2DiOS.app */,
-				3E8E66CB1DE8781700DBB707 /* Metal2DTests.xctest */,
-				3E7660341E155B6F00C302BE /* Metal2DMac.app */,
+				3E8E66AE1DE8781600DBB707 /* FoiliOS.app */,
+				3E8E66CB1DE8781700DBB707 /* FoilTests.xctest */,
+				3E7660341E155B6F00C302BE /* FoilMac.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -233,7 +233,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3E8E66B71DE8781600DBB707 /* Metal2D */ = {
+		3E8E66B71DE8781600DBB707 /* Foil */ = {
 			isa = PBXGroup;
 			children = (
 				3E8E66DA1DE8786500DBB707 /* Nodes */,
@@ -244,16 +244,16 @@
 				3E8E66BC1DE8781600DBB707 /* Shaders.metal */,
 				3E76602E1E15294900C302BE /* RenderView.swift */,
 			);
-			path = Metal2D;
+			path = Foil;
 			sourceTree = "<group>";
 		};
-		3E8E66CE1DE8781700DBB707 /* Metal2DTests */ = {
+		3E8E66CE1DE8781700DBB707 /* FoilTests */ = {
 			isa = PBXGroup;
 			children = (
-				3E8E66CF1DE8781700DBB707 /* Metal2DTests.swift */,
+				3E8E66CF1DE8781700DBB707 /* FoilTests.swift */,
 				3E8E66D11DE8781700DBB707 /* Info.plist */,
 			);
-			path = Metal2DTests;
+			path = FoilTests;
 			sourceTree = "<group>";
 		};
 		3E8E66DA1DE8786500DBB707 /* Nodes */ = {
@@ -297,9 +297,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3E7660331E155B6F00C302BE /* Metal2DMac */ = {
+		3E7660331E155B6F00C302BE /* FoilMac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E7660401E155B6F00C302BE /* Build configuration list for PBXNativeTarget "Metal2DMac" */;
+			buildConfigurationList = 3E7660401E155B6F00C302BE /* Build configuration list for PBXNativeTarget "FoilMac" */;
 			buildPhases = (
 				3E7660301E155B6F00C302BE /* Sources */,
 				3E7660311E155B6F00C302BE /* Frameworks */,
@@ -309,14 +309,14 @@
 			);
 			dependencies = (
 			);
-			name = Metal2DMac;
-			productName = Metal2DMac;
-			productReference = 3E7660341E155B6F00C302BE /* Metal2DMac.app */;
+			name = FoilMac;
+			productName = FoilMac;
+			productReference = 3E7660341E155B6F00C302BE /* FoilMac.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3E8E66AD1DE8781600DBB707 /* Metal2DiOS */ = {
+		3E8E66AD1DE8781600DBB707 /* FoiliOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E8E66D41DE8781700DBB707 /* Build configuration list for PBXNativeTarget "Metal2DiOS" */;
+			buildConfigurationList = 3E8E66D41DE8781700DBB707 /* Build configuration list for PBXNativeTarget "FoiliOS" */;
 			buildPhases = (
 				3E8E66AA1DE8781600DBB707 /* Sources */,
 				3E8E66AB1DE8781600DBB707 /* Frameworks */,
@@ -326,14 +326,14 @@
 			);
 			dependencies = (
 			);
-			name = Metal2DiOS;
-			productName = Metal2D;
-			productReference = 3E8E66AE1DE8781600DBB707 /* Metal2DiOS.app */;
+			name = FoiliOS;
+			productName = Foil;
+			productReference = 3E8E66AE1DE8781600DBB707 /* FoiliOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3E8E66CA1DE8781700DBB707 /* Metal2DTests */ = {
+		3E8E66CA1DE8781700DBB707 /* FoilTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E8E66D71DE8781700DBB707 /* Build configuration list for PBXNativeTarget "Metal2DTests" */;
+			buildConfigurationList = 3E8E66D71DE8781700DBB707 /* Build configuration list for PBXNativeTarget "FoilTests" */;
 			buildPhases = (
 				3E8E66C71DE8781700DBB707 /* Sources */,
 				3E8E66C81DE8781700DBB707 /* Frameworks */,
@@ -345,9 +345,9 @@
 				3EBF1B1B1E19640A00608E9C /* PBXTargetDependency */,
 				3EBF1B211E196AE200608E9C /* PBXTargetDependency */,
 			);
-			name = Metal2DTests;
-			productName = Metal2DTests;
-			productReference = 3E8E66CB1DE8781700DBB707 /* Metal2DTests.xctest */;
+			name = FoilTests;
+			productName = FoilTests;
+			productReference = 3E8E66CB1DE8781700DBB707 /* FoilTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -374,7 +374,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3E8E66A91DE8781600DBB707 /* Build configuration list for PBXProject "Metal2D" */;
+			buildConfigurationList = 3E8E66A91DE8781600DBB707 /* Build configuration list for PBXProject "Foil" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -387,9 +387,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3E8E66AD1DE8781600DBB707 /* Metal2DiOS */,
-				3E8E66CA1DE8781700DBB707 /* Metal2DTests */,
-				3E7660331E155B6F00C302BE /* Metal2DMac */,
+				3E8E66AD1DE8781600DBB707 /* FoiliOS */,
+				3E8E66CA1DE8781700DBB707 /* FoilTests */,
+				3E7660331E155B6F00C302BE /* FoilMac */,
 			);
 		};
 /* End PBXProject section */
@@ -477,7 +477,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EA163FA1E36A88100DFDA42 /* Animator.swift in Sources */,
-				3E8E66D01DE8781700DBB707 /* Metal2DTests.swift in Sources */,
+				3E8E66D01DE8781700DBB707 /* FoilTests.swift in Sources */,
 				3E1394601E26D1FB001BE860 /* LineNode.swift in Sources */,
 				3EC388821E365EE8006ED5C7 /* Color.swift in Sources */,
 				3E8E66DD1DE8787500DBB707 /* Node.swift in Sources */,
@@ -497,12 +497,12 @@
 /* Begin PBXTargetDependency section */
 		3EBF1B1B1E19640A00608E9C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3E7660331E155B6F00C302BE /* Metal2DMac */;
+			target = 3E7660331E155B6F00C302BE /* FoilMac */;
 			targetProxy = 3EBF1B1A1E19640A00608E9C /* PBXContainerItemProxy */;
 		};
 		3EBF1B211E196AE200608E9C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3E8E66AD1DE8781600DBB707 /* Metal2DiOS */;
+			target = 3E8E66AD1DE8781600DBB707 /* FoiliOS */;
 			targetProxy = 3EBF1B201E196AE200608E9C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -541,10 +541,10 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Metal2DMac/Info.plist;
+				INFOPLIST_FILE = FoilMac/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2DMac;
+				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.FoilMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
@@ -558,10 +558,10 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Metal2DMac/Info.plist;
+				INFOPLIST_FILE = FoilMac/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2DMac;
+				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.FoilMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
@@ -666,9 +666,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = Metal2DiOS/Info.plist;
+				INFOPLIST_FILE = FoiliOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2D;
+				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Foil;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -678,9 +678,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = Metal2DiOS/Info.plist;
+				INFOPLIST_FILE = FoiliOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Metal2D;
+				PRODUCT_BUNDLE_IDENTIFIER = pixelrock.Foil;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -692,7 +692,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Metal2DTests;
+				PRODUCT_NAME = FoilTests;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -702,7 +702,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				PRODUCT_NAME = Metal2DTests;
+				PRODUCT_NAME = FoilTests;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -710,7 +710,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3E7660401E155B6F00C302BE /* Build configuration list for PBXNativeTarget "Metal2DMac" */ = {
+		3E7660401E155B6F00C302BE /* Build configuration list for PBXNativeTarget "FoilMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E7660411E155B6F00C302BE /* Debug */,
@@ -719,7 +719,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E8E66A91DE8781600DBB707 /* Build configuration list for PBXProject "Metal2D" */ = {
+		3E8E66A91DE8781600DBB707 /* Build configuration list for PBXProject "Foil" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E8E66D21DE8781700DBB707 /* Debug */,
@@ -728,7 +728,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E8E66D41DE8781700DBB707 /* Build configuration list for PBXNativeTarget "Metal2DiOS" */ = {
+		3E8E66D41DE8781700DBB707 /* Build configuration list for PBXNativeTarget "FoiliOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E8E66D51DE8781700DBB707 /* Debug */,
@@ -737,7 +737,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E8E66D71DE8781700DBB707 /* Build configuration list for PBXNativeTarget "Metal2DTests" */ = {
+		3E8E66D71DE8781700DBB707 /* Build configuration list for PBXNativeTarget "FoilTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3EBF1B1E1E19669400608E9C /* Debug */,

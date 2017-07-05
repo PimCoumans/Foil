@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 25/11/16.
 //  Copyright © 2016 pixelrock. All rights reserved.

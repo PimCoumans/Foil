@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Metal2D.xcodeproj">
+      location = "self:/Users/Pim/Development/iOS/Metal2D/Foil.xcodeproj">
    </FileRef>
 </Workspace>

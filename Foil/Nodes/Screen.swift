@@ -1,6 +1,6 @@
 //
 //  Screen.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 03/12/16.
 //  Copyright © 2016 pixelrock. All rights reserved.

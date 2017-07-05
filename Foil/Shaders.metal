@@ -1,6 +1,6 @@
 //
 //  ImageShaders.metal
-//  Metal2D
+//  Foil
 //
 //  Created by Kaz Yoshikawa on 12/22/15.
 //

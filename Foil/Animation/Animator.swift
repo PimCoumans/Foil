@@ -1,6 +1,6 @@
 //
 //  Animator.swift
-//  Metal2D
+//  Foil
 //
 //  Created by Pim Coumans on 23/01/17.
 //  Copyright © 2017 pixelrock. All rights reserved.
