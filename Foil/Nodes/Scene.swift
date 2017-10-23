@@ -9,7 +9,11 @@
 import Foundation
 import CoreGraphics
 
-class Scene: Node {
+protocol Updatable {
+	func update(with context: RenderContext)
+}
+
+class Scene: Node, Updatable {
 	
 	weak var renderView: RenderView? {
 		willSet {
@@ -40,7 +44,7 @@ class Scene: Node {
 		touchCancelled()
 	}
 	
-	func update(withContext context:RenderContext) {
+	func update(with context:RenderContext) {
 		// update, with... stuff?
 	}
 	

@@ -60,7 +60,7 @@ class RenderView: MTKView, MTKViewDelegate {
 		renderBlock = { [weak self] context in
 			Animator.shared.update(with: context)
 			if let scene = self?.scene {
-				scene.update(withContext: context)
+				scene.update(with: context)
 				scene.renderRecursively(with: context)
 			}
 		}

@@ -169,6 +169,27 @@ class Node: Interactable, Animatable {
 			return nil
 		}
 	}
+	
+	var boundingFrameOfChildren: CGRect {
+		var boundingFrame = self.frame
+		for node in children {
+			guard !node.hidden else { continue }
+			var nodeFrame = node.boundingFrameOfChildren.applying(node.transform.inverted())
+			
+			guard !nodeFrame.isNull && !nodeFrame.isInfinite else { continue }
+			
+			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.maxY) * scale.width
+			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.minY) * scale.height
+			
+			topLeft += position
+			bottomRight += position
+			
+			nodeFrame = CGRect(x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y)
+			
+			boundingFrame = boundingFrame.union(nodeFrame)
+		}
+		return boundingFrame.applying(transform)
+	}
 }
 
 extension Node: Hashable {
@@ -276,27 +297,6 @@ extension Node {
 
 extension Node {
 	// MARK: Node finding
-	
-	var boundingFrameOfChildren: CGRect {
-		var boundingFrame = self.frame
-		for node in children {
-			guard !node.hidden else { continue }
-			var nodeFrame = node.boundingFrameOfChildren.applying(node.transform.inverted())
-			
-			guard !nodeFrame.isNull && !nodeFrame.isInfinite else { continue }
-			
-			var topLeft = CGPoint(x: nodeFrame.minX, y: nodeFrame.maxY) * scale.width
-			var bottomRight = CGPoint(x: nodeFrame.maxX, y: nodeFrame.minY) * scale.height
-			
-			topLeft += position
-			bottomRight += position
-			
-			nodeFrame = CGRect(x: topLeft.x, y: topLeft.y, width: bottomRight.x - topLeft.x, height: bottomRight.y - topLeft.y)
-			
-			boundingFrame = boundingFrame.union(nodeFrame)
-		}
-		return boundingFrame.applying(transform)
-	}
 	
 	/// Searches the reciever for nodes in it's local coordinate space
 	///
