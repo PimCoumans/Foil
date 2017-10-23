@@ -79,19 +79,19 @@ extension Animation: Equatable {
 	}
 }
 
-struct Property: RawRepresentable, Equatable, Hashable {
+struct Property: Equatable, Hashable {
     
     let rawValue: String
     let index: Int
 	let isRelative: Bool
     
-    init(rawValue: Property.RawValue) {
+    init(rawValue: String) {
         self.rawValue = rawValue
         self.index = -1
 		self.isRelative = false
     }
     
-	init(_ rawValue: Property.RawValue, at index: Int = -1, relative: Bool = false) {
+	init(_ rawValue: String, at index: Int = -1, relative: Bool = false) {
         self.rawValue = rawValue
         self.index = index
 		self.isRelative = relative
