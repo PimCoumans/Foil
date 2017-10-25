@@ -63,24 +63,31 @@ class TextureNode: Node {
 	var color: Color = Color.white
 	
 	fileprivate class func convert(image:Image) -> CGImage? {
-		#if os(OSX)
-			if let data = image.tiffRepresentation, let imageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(imageSource) > 0 {
-				if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
-					return cgImage
-				}
-			}
-		#elseif os(iOS)
-			if let cgImage = image.cgImage {
-				if let context = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
-					context.scaleBy(x: 1, y: -1)
-					context.translateBy(x: 0, y: CGFloat(cgImage.height))
-					context.draw(cgImage, in: context.boundingBoxOfClipPath)
-					if let newImage = context.makeImage() {
-						return newImage
-					}
-				}
-			}
+		#if os(iOS)
+		guard let cgImage = image.cgImage else {
+			return
+		}
+		let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
+		#else
+		let imageSize = image.size
 		#endif
+		if let context = CGContext(data: nil, width: Int(imageSize.width), height: Int(imageSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+			#if os(iOS)
+				context.scaleBy(x: 1, y: -1)
+				context.translateBy(x: 0, y: CGFloat(cgImage.height))
+				context.draw(cgImage, in: context.boundingBoxOfClipPath)
+			#else
+				let graphicsContext = NSGraphicsContext(cgContext: context, flipped: false)
+				defer {
+					NSGraphicsContext.setCurrent(nil)
+				}
+				NSGraphicsContext.setCurrent(graphicsContext)
+				image.draw(in: CGRect(origin: .zero, size: image.size))
+				#endif
+			if let newImage = context.makeImage() {
+				return newImage
+			}
+		}
 		return nil
 	}
 	
