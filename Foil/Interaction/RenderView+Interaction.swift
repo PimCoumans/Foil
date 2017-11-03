@@ -14,11 +14,15 @@
 
 extension RenderView {
 	
-	var pixelScale:CGFloat {
+	var pixelScale: CGFloat {
 		let screenSize = screen.bounds.size
 		let minScreenBounds = min(screenSize.width, screenSize.height)
 		let minViewSize = min(bounds.width, bounds.height)
 		return minScreenBounds / minViewSize
+	}
+	
+	var isInteracting: Bool {
+		return scene?.inputReceivingNode != nil
 	}
 	
 	func touchBegan(atPoint point: CGPoint) {

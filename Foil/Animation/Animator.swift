@@ -261,6 +261,10 @@ class Animator {
 		return animations.filter({$0.isRunning})
 	}
 	
+	var isRunningAnimations: Bool {
+		return runningAnimations.count > 0
+	}
+	
 	static let shared = {
 		return Animator()
 	}()

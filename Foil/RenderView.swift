@@ -53,6 +53,10 @@ class RenderView: MTKView, MTKViewDelegate {
 	func initializeMetal() {
 		#if os(OSX)
 			window?.acceptsMouseMovedEvents = true
+		#else
+			if #available(iOS 10.3, *) {
+				preferredFramesPerSecond = UIScreen.main.maximumFramesPerSecond
+			}
 		#endif
 		library = device?.newDefaultLibrary()
 		commandQueue = device?.makeCommandQueue()
@@ -69,11 +73,11 @@ class RenderView: MTKView, MTKViewDelegate {
 	
 	var lastTime: CFAbsoluteTime = 0
 	var currentTime: CFAbsoluteTime = 0
-	var delta: Double = 0
+	var delta: Double = 0.035
 	
 	func draw(in view: MTKView) {
 		let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
-		
+
 		let commandBuffer = commandQueue.makeCommandBuffer()
 		commandBuffer.label = "Frame command buffer"
 		commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
@@ -83,6 +87,10 @@ class RenderView: MTKView, MTKViewDelegate {
 			return
 		}
 		
+		let minFramesPerSecond = 30
+		let maxFramesPerSecond = isInteracting || Animator.shared.isRunningAnimations ? preferredFramesPerSecond : minFramesPerSecond
+		let minFrameTime = 1 / Double(maxFramesPerSecond)
+		
 		if bufferIndex == 0 {
 			if currentTime == 0 {
 				currentTime = CFAbsoluteTimeGetCurrent()
@@ -90,7 +98,8 @@ class RenderView: MTKView, MTKViewDelegate {
 			lastTime = currentTime
 			currentTime = CFAbsoluteTimeGetCurrent()
 			let totalDelta = currentTime - lastTime
-			delta = min(Double(totalDelta / Double(MaxBuffers)), 0.035)
+			let maxFrameTime = 1 / Double(minFramesPerSecond)
+			delta = max(min(Double(totalDelta / Double(MaxBuffers)), maxFrameTime), minFrameTime)
 		}
 		
 		if let renderPassDescriptor = view.currentRenderPassDescriptor, let drawable = view.currentDrawable {
@@ -117,7 +126,11 @@ class RenderView: MTKView, MTKViewDelegate {
 			renderBlock?(renderContext)
 			
 			renderEncoder.endEncoding()
-			commandBuffer.present(drawable)
+			#if os(OSX)
+				commandBuffer.present(drawable)
+			#else
+				commandBuffer.present(drawable, afterMinimumDuration: minFrameTime)
+			#endif
 		}
 		
 		// bufferIndex matches the current semaphore controled frame index to ensure writing occurs at the correct region in the vertex buffer
