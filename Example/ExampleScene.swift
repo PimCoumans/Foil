@@ -24,11 +24,10 @@ class ExampleScene: Scene {
 		rootNode.scale = CGSize(width: 10, height: 10)
 		addChild(rootNode)
 		
-		if let textureNode = TextureNode(name: "pim", size:CGSize(width:2, height:2)) {
-			textureNode.position = CGPoint(x: 0, y: 0)
-			self.textureNode = textureNode
-			rootNode.addChild(textureNode)
-		}
+		let textureNode = TextureNode(name: "pim", size:CGSize(width:2, height:2))
+		textureNode.position = CGPoint(x: 0, y: 0)
+		self.textureNode = textureNode
+		rootNode.addChild(textureNode)
 		
 		lineNode = LineNode()
 		lineNode.colors = [.yellow, .purple]
@@ -69,7 +68,7 @@ class ExampleScene: Scene {
 	}
 	
 	var moveDirection = CGPoint(x: 1, y: 1)
-	override func update(withContext context:RenderContext) {
+	override func update(with context: RenderContext) {
 		if !useAnimations {
 			textureNode.rotation += 0.02
 			
@@ -104,12 +103,12 @@ class ExampleScene: Scene {
 			if cappedPosition != textureNodePosition {
 				textureNode.position = rootNode.convert(worldPosition: cappedPosition)
 			}
+			lineNode.points[1] = textureNode.position
 		}
-//		lineNode.points[1] = textureNode.position
 	}
 	
 	override func touchBegan(atPosition position: CGPoint) {
-		if let node = self.node(atPosition: position), node.parent != nil {
+		if let node = self.node(atPosition: position) as? TextureNode, node.parent != nil {
 			node.cancelAnimations()
 			selectedChildNode = node
 		}
