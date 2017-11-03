@@ -53,21 +53,24 @@ class Scene: Node, Updatable {
 			super.renderRecursively(with: context)
 			return
 		}
-		// TODO: cache references to ordered nodes?
-		var nodes = [Node]()
-		func addNodesFromNode(node:Node) {
-			guard !node.hidden else { return }
-			for child in node.children {
-				guard !child.hidden else { continue }
-				if child.children.count == 0 {
-					nodes.append(child)
-				} else {
-					addNodesFromNode(node: child)
+		
+		let nodes = cached("nodes") { () -> [Node] in
+			var nodes = [Node]()
+			func addNodesFromNode(node:Node) {
+				guard !node.hidden else { return }
+				for child in node.children {
+					guard !child.hidden else { continue }
+					if child.children.count == 0 {
+						nodes.append(child)
+					} else {
+						addNodesFromNode(node: child)
+					}
 				}
 			}
+			addNodesFromNode(node: self)
+			nodes.sort(by: {$0.globalZPosition < $1.globalZPosition})
+			return nodes
 		}
-		addNodesFromNode(node: self)
-		nodes.sort(by: {$0.globalZPosition < $1.globalZPosition})
 		for node in nodes {
 			node.render(with: context)
 		}

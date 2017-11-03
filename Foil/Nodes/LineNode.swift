@@ -27,15 +27,22 @@ class LineNode : Node {
 		var modelViewProjectionMatrix: GLKMatrix4
 	}
 	
-	var points:[CGPoint] = [.zero, .zero]
-	var colors:[Color] = [.white, .white] // TODO: apply colors to vertices
+	var points:[CGPoint] = [.zero, .zero] {
+		didSet { clearCache(name: "globalFrame"); clearCache(name: "vertices") }
+	}
+	var colors:[Color] = [.white, .white]
 	
-	var lineWidth: CGFloat = 0.5
+	var lineWidth: CGFloat = 0.5 {
+		didSet { clearCache(name: "globalFrame"); clearCache(name: "vertices") }
+	}
 	var length: CGFloat {
 		return points[0].distance(fromPoint: points[1])
 	}
 	
 	var corners: [CGPoint] {
+		guard length > 0 else {
+			return []
+		}
 		var corners = [CGPoint]()
 		for pointIndex in 0..<points.count {
 			let point = points[pointIndex]
@@ -62,17 +69,22 @@ class LineNode : Node {
 	}
 	
 	var vertices:[Vertex] {
-		let scale = globalScale
-		let position = globalPosition
-		let vertices = [0, 3, 2, 0, 2, 1].map { index -> Vertex in
-			var point = corners[index]
-			point.x *= scale.width
-			point.y *= scale.height
-			let globalPoint = position + point
-			return Vertex(point: globalPoint.applying(globalTransform))
+		return cached(#function) {
+			let scale = globalScale
+			let position = globalPosition
+			guard corners.count >= 4 else {
+				return []
+			}
+			let vertices = [0, 3, 2, 0, 2, 1].map { index -> Vertex in
+				var point = corners[index]
+				point.x *= scale.width
+				point.y *= scale.height
+				let globalPoint = position + point
+				return Vertex(point: globalPoint.applying(globalTransform))
+			}
+			
+			return vertices
 		}
-		
-		return vertices
 	}
 	
 	

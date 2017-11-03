@@ -17,10 +17,18 @@ class Node: Interactable, Animatable {
 	// Position and scale are based on the parents local coordinate system
 	// If the parent has a scale of 2, this node has a scale of 1
 	// it will be rendered twice as big
-	var position = CGPoint.zero
-	var zPosition: CGFloat = 0
-	var anchorPoint = CGPoint(x: 0.5, y: 0.5)
-	var scale = CGSize(width: 1, height: 1)
+	var position = CGPoint.zero {
+		didSet { clearCache(name: "globalPosition"); clearCache(name: "globalFrame") }
+	}
+	var zPosition: CGFloat = 0 {
+		didSet { guard zPosition != oldValue else { return }; clearCache(name: "globalZPosition"); scene?.clearCache(name: "nodes") }
+	}
+	var anchorPoint = CGPoint(x: 0.5, y: 0.5) {
+		didSet { clearCache(name: "globalFrame"); clearCache(name: "globalTransform") }
+	}
+	var scale = CGSize(width: 1, height: 1) {
+		didSet { clearCache(name: "globalScale"); clearCache(name: "globalPosition"); clearCache(name: "globalFrame") }
+	}
 	var frame: CGRect {
 		var frame = bounds
 		frame.origin += position
@@ -45,7 +53,7 @@ class Node: Interactable, Animatable {
 	}
 	fileprivate(set) weak var parent:Node? {
 		willSet { willMoveToParent(newValue) }
-		didSet { didMoveToParent() }
+		didSet { clearCache(); didMoveToParent() }
 	}
 	fileprivate(set) var children = [Node]()
 	
@@ -63,6 +71,7 @@ class Node: Interactable, Animatable {
 		} else {
 			node.scene = scene
 		}
+		node.scene?.clearCache(name: "nodes")
 	}
 	
 	func removeFromParent() {
@@ -71,6 +80,7 @@ class Node: Interactable, Animatable {
 				return
 		}
 		parent.children.remove(at: index)
+		scene?.clearCache(name: "nodes")
 		self.parent = nil
 		self.scene = nil
 	}
@@ -103,7 +113,10 @@ class Node: Interactable, Animatable {
 	var selected: Bool = false
 	
 	var alpha: CGFloat = 1
-	var rotation: CGFloat = 0
+	var rotation: CGFloat = 0 {
+		didSet { clearCache(name: "globalRotation"); clearCache(name: "globalTransform") }
+	}
+	
 	var transform: CGAffineTransform {
 		let boundingRect = globalFrame
 		var center = boundingRect.origin
@@ -190,6 +203,27 @@ class Node: Interactable, Animatable {
 		}
 		return boundingFrame.applying(transform)
 	}
+	
+	private var geometryCache = [String: Any]()
+	func cached<T>(_ name: String, or accessor: () -> T) -> T {
+		if let value = geometryCache[name] as? T {
+			return value
+		}
+		let value = accessor()
+		geometryCache[name] = value
+		return value
+	}
+	
+	func clearCache(name: String? = nil) {
+		if let name = name {
+			geometryCache.removeValue(forKey: name)
+		} else {
+			geometryCache.removeAll(keepingCapacity: true)
+		}
+		for node in children {
+			node.clearCache(name: name)
+		}
+	}
 }
 
 extension Node: Hashable {
@@ -210,64 +244,74 @@ extension Node: Hashable {
 }
 
 extension Node {
-	
-	// TODO: cache global/world positions, update if self or a parent changes
 	// MARK: Global calculation
 	var globalPosition: CGPoint {
-		var position = CGPoint.zero
-		enumerateUp { node in
-			var localPosition = node.position
-			if let parent = node.parent {
-				localPosition.x *= parent.scale.width
-				localPosition.y *= parent.scale.height
+		return cached(#function) {
+			var position = CGPoint.zero
+			enumerateUp { node in
+				var localPosition = node.position
+				if let parent = node.parent {
+					localPosition.x *= parent.scale.width
+					localPosition.y *= parent.scale.height
+				}
+				position += localPosition
 			}
-			position += localPosition
+			return position
 		}
-		return position
 	}
 	
 	var globalZPosition: CGFloat {
-		var position: CGFloat = 0
-		enumerateUp { node in
-			position += node.zPosition
+		return cached(#function) {
+			var position: CGFloat = 0
+			enumerateUp { node in
+				position += node.zPosition
+			}
+			return position
 		}
-		return position
 	}
 	
 	var globalScale: CGSize {
-		var scale = CGSize(width:1,height:1)
-		enumerateUp { node in
-			scale = CGSize(width:scale.width * node.scale.width, height: scale.height * node.scale.height)
+		return cached(#function) {
+			var scale = CGSize(width:1,height:1)
+			enumerateUp { node in
+				scale = CGSize(width:scale.width * node.scale.width, height: scale.height * node.scale.height)
+			}
+			return scale
 		}
-		return scale
 	}
 	
 	var globalFrame: CGRect {
-		let bounds = self.bounds
-		var rect = CGRect()
-		rect.origin = globalPosition
-		let scale = globalScale
-		let scaledSize = CGSize(width: bounds.width * scale.width, height: -bounds.height * scale.height)
-		rect.origin.x -= scaledSize.width * anchorPoint.x
-		rect.size = scaledSize
-		rect.origin.y -= scaledSize.height * anchorPoint.y
-		return rect
+		return cached(#function) {
+			let bounds = self.bounds
+			var rect = CGRect()
+			rect.origin = globalPosition
+			let scale = globalScale
+			let scaledSize = CGSize(width: bounds.width * scale.width, height: -bounds.height * scale.height)
+			rect.origin.x -= scaledSize.width * anchorPoint.x
+			rect.size = scaledSize
+			rect.origin.y -= scaledSize.height * anchorPoint.y
+			return rect
+		}
 	}
 	
 	var globalRotation: CGFloat {
-		var rotation: CGFloat = 0
-		enumerateUp { node in
-			rotation += node.rotation
+		return cached(#function) {
+			var rotation: CGFloat = 0
+			enumerateUp { node in
+				rotation += node.rotation
+			}
+			return rotation
 		}
-		return rotation
 	}
 	
 	var globalTransform: CGAffineTransform {
-		var transform = CGAffineTransform.identity
-		enumerateUp { node in
-			transform = transform.concatenating(node.transform)
+		return cached(#function) {
+			var transform = CGAffineTransform.identity
+			enumerateUp { node in
+				transform = transform.concatenating(node.transform)
+			}
+			return transform
 		}
-		return transform
 	}
 	
 	func enumerateUp(using block: @escaping(_ parent:Node)->()) {

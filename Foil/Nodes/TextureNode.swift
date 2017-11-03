@@ -65,7 +65,7 @@ class TextureNode: Node {
 	fileprivate class func convert(image:Image) -> CGImage? {
 		#if os(iOS)
 		guard let cgImage = image.cgImage else {
-			return
+			return nil
 		}
 		let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
 		#else
