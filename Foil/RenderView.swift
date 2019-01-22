@@ -58,7 +58,7 @@ class RenderView: MTKView, MTKViewDelegate {
 				preferredFramesPerSecond = UIScreen.main.maximumFramesPerSecond
 			}
 		#endif
-		library = device?.newDefaultLibrary()
+        library = device?.makeDefaultLibrary()
 		commandQueue = device?.makeCommandQueue()
 		screen = Screen(renderView: self)
 		renderBlock = { [weak self] context in
@@ -78,7 +78,10 @@ class RenderView: MTKView, MTKViewDelegate {
 	func draw(in view: MTKView) {
 		let _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
 
-		let commandBuffer = commandQueue.makeCommandBuffer()
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            print("Could not create new command buffer")
+            return
+        }
 		commandBuffer.label = "Frame command buffer"
 		commandBuffer.addCompletedHandler{ [weak self] commandBuffer in
 			if let strongSelf = self {
@@ -116,16 +119,17 @@ class RenderView: MTKView, MTKViewDelegate {
 			renderPassDescriptor.colorAttachments[0].loadAction = .clear
 			renderPassDescriptor.colorAttachments[0].storeAction = .store
 			
-			let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-			
-			let screenBounds = screen.bounds
-			let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
-			
-			let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex, delta:delta)
-			
-			renderBlock?(renderContext)
-			
-			renderEncoder.endEncoding()
+            if let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
+                let screenBounds = screen.bounds
+                let transform = GLKMatrix4MakeOrtho(Float(screenBounds.minX), Float(screenBounds.maxX), Float(screenBounds.minY), Float(screenBounds.maxY), -1, 1)
+                
+                let renderContext = RenderContext(commandEncoder: renderEncoder, transform:transform, bufferIndex:bufferIndex, delta:delta)
+                
+                renderBlock?(renderContext)
+                
+                renderEncoder.endEncoding()
+            }
+            
 			#if os(OSX)
 				commandBuffer.present(drawable)
 			#else

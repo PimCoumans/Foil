@@ -79,9 +79,9 @@ class TextureNode: Node {
 			#else
 				let graphicsContext = NSGraphicsContext(cgContext: context, flipped: false)
 				defer {
-					NSGraphicsContext.setCurrent(nil)
+					NSGraphicsContext.current = nil
 				}
-				NSGraphicsContext.setCurrent(graphicsContext)
+				NSGraphicsContext.current = graphicsContext
 				image.draw(in: CGRect(origin: .zero, size: image.size))
 				#endif
 			if let newImage = context.makeImage() {
@@ -249,12 +249,12 @@ class TextureNode: Node {
 		
 		encoder.setRenderPipelineState(renderPipelineState)
 		
-		encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, at: 0)
-		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 1)
-		encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, at: 2)
+        encoder.setVertexBuffer(vertexBuffer, offset: MemoryLayout<Vertex>.size * vertexOffset, index: 0)
+        encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, index: 1)
+        encoder.setFragmentBuffer(colorBuffer, offset: 256 * context.bufferIndex, index: 2)
 		
-		encoder.setFragmentTexture(texture, at: 0)
-		encoder.setFragmentSamplerState(colorSamplerState, at: 0)
+        encoder.setFragmentTexture(texture, index: 0)
+        encoder.setFragmentSamplerState(colorSamplerState, index: 0)
 		
 		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: VertextCount)
 	}
@@ -277,7 +277,7 @@ extension TextureNode {
 		}
 		
 		if let textureLoader = TextureNode.textureLoader {
-			let texture = try textureLoader.newTexture(with: cgImage, options: nil)
+            let texture = try textureLoader.newTexture(cgImage: cgImage, options: nil)
 			textureCache[imageName] = texture
 			return texture
 		}

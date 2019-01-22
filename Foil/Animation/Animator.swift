@@ -118,7 +118,7 @@ struct Property: Equatable, Hashable {
 }
 
 protocol TargetPropertyContainer {
-	weak var target: Animatable? { get }
+	var target: Animatable? { get } // should always be weak
 	var property: Property { get }
 }
 

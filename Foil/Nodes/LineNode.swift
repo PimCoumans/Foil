@@ -163,9 +163,9 @@ class LineNode : Node {
 		
 		encoder.setRenderPipelineState(renderPipelineState)
 		
-		encoder.setVertexBuffer(vertexBuffer, offset: 256 * context.bufferIndex, at: 0)
-		encoder.setVertexBuffer(vertexColorBuffer, offset: 256 * context.bufferIndex, at: 1)
-		encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, at: 2)
+        encoder.setVertexBuffer(vertexBuffer, offset: 256 * context.bufferIndex, index: 0)
+        encoder.setVertexBuffer(vertexColorBuffer, offset: 256 * context.bufferIndex, index: 1)
+        encoder.setVertexBuffer(uniformsBuffer, offset: 256 * context.bufferIndex, index: 2)
 		
 		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
 	}
