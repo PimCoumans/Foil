@@ -11,7 +11,7 @@ import CoreGraphics
 extension CGSize {
 	public func nearlyEqual(toPoint point: CGSize, epsilon: CGFloat) -> Bool {
 		let difference = self - point
-		return fabs(difference.width) < epsilon && fabs(difference.height) < epsilon
+		return abs(difference.width) < epsilon && abs(difference.height) < epsilon
 	}
 }
 
