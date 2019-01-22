@@ -64,3 +64,4 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 /Metal2D.xcodeproj/xcuserdata
+.DS_Store
