@@ -1,15 +1,15 @@
 //
-//  Metal2DTests.swift
-//  Metal2DTests
+//  FoilTests.swift
+//  FoilTests
 //
 //  Created by Pim Coumans on 25/11/16.
 //  Copyright © 2016 pixelrock. All rights reserved.
 //
 
 import XCTest
-@testable import Metal2DiOS
+@testable import FoilMac
 
-class Metal2DTests: XCTestCase {
+class FoilTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -49,13 +49,6 @@ class Metal2DTests: XCTestCase {
         secondChild.removeFromParent()
         XCTAssert(rootNode.children.count == 0)
         XCTAssert(secondChild.parent == nil)
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
     }
     
 }
