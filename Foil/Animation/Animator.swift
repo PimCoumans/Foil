@@ -153,11 +153,11 @@ class PropertyAnimation<T:Lerpable>: Animation, TargetPropertyContainer {
         super.update(delta: delta)
     }
     
-    override func reset() -> PropertyAnimation {
+    override func reset() -> Self {
         if !usesStartValue {
             startValue = nil
         }
-        return super.reset() as! PropertyAnimation
+        return super.reset()
     }
     
     override func didUpdate(delta: Double) {
