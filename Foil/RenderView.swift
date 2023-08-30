@@ -94,12 +94,13 @@ class RenderView: MTKView, MTKViewDelegate {
         let maxFramesPerSecond = isInteracting || Animator.shared.isRunningAnimations ? preferredFramesPerSecond : minFramesPerSecond
         let minFrameTime = 1 / Double(maxFramesPerSecond)
         
+		let time = CFAbsoluteTimeGetCurrent()
         if bufferIndex == 0 {
             if currentTime == 0 {
-                currentTime = CFAbsoluteTimeGetCurrent()
+                currentTime = time
             }
             lastTime = currentTime
-            currentTime = CFAbsoluteTimeGetCurrent()
+            currentTime = time
             let totalDelta = currentTime - lastTime
             let maxFrameTime = 1 / Double(minFramesPerSecond)
             delta = max(min(Double(totalDelta / Double(MaxBuffers)), maxFrameTime), minFrameTime)
@@ -133,7 +134,7 @@ class RenderView: MTKView, MTKViewDelegate {
             #if os(OSX)
             commandBuffer.present(drawable)
             #else
-            commandBuffer.present(drawable, afterMinimumDuration: minFrameTime)
+            commandBuffer.present(drawable)
             #endif
         }
         
