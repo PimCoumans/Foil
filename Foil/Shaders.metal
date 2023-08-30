@@ -29,11 +29,10 @@ struct Uniforms {
     float4x4 modelViewProjectionMatrix;
 };
 
-vertex VertexOut image_vertex(
-                              device VertexIn * vertices [[ buffer(0) ]],
+vertex VertexOut image_vertex(const device VertexIn * vertices [[ buffer(0) ]],
                               constant Uniforms & uniforms [[ buffer(1) ]],
-                              uint vid [[ vertex_id ]]
-                              ) {
+                              uint vid [[ vertex_id ]])
+{
     VertexOut outVertex;
     VertexIn inVertex = vertices[vid];
     outVertex.position = uniforms.modelViewProjectionMatrix * float4(inVertex.position);
@@ -41,13 +40,12 @@ vertex VertexOut image_vertex(
     return outVertex;
 }
 
-fragment half4 image_fragment(
-                              VertexOut vertexIn [[ stage_in ]],
+fragment half4 image_fragment(VertexOut vertexIn [[ stage_in ]],
                               constant Uniforms & uniforms [[ buffer(0) ]],
                               constant float4* color [[ buffer(2) ]],
                               texture2d<float, access::sample> colorTexture [[ texture(0) ]],
-                              sampler colorSampler [[ sampler(0) ]]
-                              ) {
+                              sampler colorSampler [[ sampler(0) ]])
+{
     return half4(colorTexture.sample(colorSampler, vertexIn.texcoords).rgba * color[0]);
 }
 
