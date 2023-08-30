@@ -150,10 +150,11 @@ class LineNode : Node {
 			vertexArray[index] = vertices[index]
 		}
 		
-		let colorArray = (vertexColorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Color.self, capacity: 256 / MemoryLayout<Color>.stride)
+		let colorArray = (vertexColorBuffer.contents() + 256 * context.bufferIndex)
+			.bindMemory(to: packed_float4.self, capacity: 256 / MemoryLayout<packed_float4>.stride)
 		for index in 0 ..< vertices.count {
 			let colorIndex = [0, 3, 5].contains(index) ? 0 : 1
-			colorArray[index] = colors[colorIndex]
+			colorArray[index] = colors[colorIndex].float4
 		}
 		
 		let uniforms = Uniforms(modelViewProjectionMatrix: context.transform)

@@ -22,11 +22,13 @@ extension Lerpable {
     }
 }
 
-extension CGFloat: Lerpable {
-    mutating internal func lerp(to: CGFloat, t: Double) {
-        self += (to - self) * CGFloat(t)
-    }
+extension Lerpable where Self: BinaryFloatingPoint {
+	mutating internal func lerp(to: Self, t: Double) {
+		self += (to - self) * Self(t)
+	}
 }
+
+extension CGFloat: Lerpable { }
 
 protocol AnimationCurve {
     func value(for progress: Double) -> Double

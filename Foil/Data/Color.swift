@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import simd
 #if os(iOS)
 import UIKit
 typealias NativeColor = UIColor
@@ -16,12 +17,12 @@ typealias NativeColor = NSColor
 #endif
 
 struct Color {
-    var red: Float
-    var green: Float
-    var blue: Float
-    var alpha: Float = 1
+    var red: CGFloat
+    var green: CGFloat
+    var blue: CGFloat
+    var alpha: CGFloat = 1
     
-    init(red: Float, green: Float, blue: Float, alpha: Float = 1) {
+    init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1) {
         self.red = red
         self.green = green
         self.blue = blue
@@ -42,20 +43,20 @@ extension Color: Equatable {
 // Native color support
 extension Color {
     init(_ color: NativeColor) {
-        var r, g, b, a: Float
+        var r, g, b, a: CGFloat
         #if os(OSX)
         if color.numberOfComponents < 4 {
-            let white = Float(color.whiteComponent)
+            let white = color.whiteComponent
             r = white
             g = white
             b = white
-            a = Float(color.alphaComponent)
+            a = color.alphaComponent
         }
         else {
-            r = Float(color.redComponent)
-            g = Float(color.greenComponent)
-            b = Float(color.blueComponent)
-            a = Float(color.alphaComponent)
+            r = color.redComponent
+            g = color.greenComponent
+            b = color.blueComponent
+            a = color.alphaComponent
         }
         #elseif os(iOS)
         var red: CGFloat = 0
@@ -67,10 +68,10 @@ extension Color {
             green = red
             blue = red
         }
-        r = Float(red)
-        g = Float(green)
-        b = Float(blue)
-        a = Float(alpha)
+        r = red
+        g = green
+        b = blue
+        a = alpha
         #endif
         
         self.red = r
@@ -83,7 +84,7 @@ extension Color {
 // Convenience
 extension Color {
     
-    func with(alpha: Float) -> Color {
+    func with(alpha: CGFloat) -> Color {
         var color = self
         color.alpha = alpha
         return color
@@ -116,6 +117,17 @@ extension Color {
     static var yellow: Color {
         return Color(red: 1, green: 1, blue: 0)
     }
+}
+
+extension Color {
+	var float4: packed_float4 {
+		return packed_float4(
+			x: simd_float1(red),
+			y: simd_float1(green),
+			z: simd_float1(blue),
+			w: simd_float1(alpha)
+		)
+	}
 }
 
 // Animation

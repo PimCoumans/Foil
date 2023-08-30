@@ -244,8 +244,8 @@ class TextureNode: Node {
         let uniformsArray = (uniformsBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Uniforms.self, capacity: 256 / MemoryLayout<Uniforms>.stride)
         uniformsArray[0] = uniforms
         
-        let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:Color.self, capacity: 256 / (MemoryLayout<Color>.stride))
-        componentArray[0] = color
+        let componentArray = (colorBuffer.contents() + 256 * context.bufferIndex).bindMemory(to:packed_float4.self, capacity: 256 / (MemoryLayout<packed_float4>.stride))
+		componentArray[0] = color.float4
         
         encoder.setRenderPipelineState(renderPipelineState)
         
