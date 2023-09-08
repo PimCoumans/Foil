@@ -30,6 +30,37 @@ extension Lerpable where Self: BinaryFloatingPoint {
 
 extension CGFloat: Lerpable { }
 
+// Animation
+extension Color: Lerpable {
+	internal static func +(lhs: Color, rhs: Color) -> Color {
+		return Color(red: lhs.red + rhs.red, green: lhs.green + rhs.green, blue: lhs.blue + rhs.blue, alpha: lhs.alpha + rhs.alpha)
+	}
+
+	mutating func lerp(to color: Color, t: Double) {
+		if self == color {
+			return
+		}
+		red.lerp(to: color.red, t: t)
+		green.lerp(to: color.green, t: t)
+		blue.lerp(to: color.blue, t: t)
+		alpha.lerp(to: color.alpha, t: t)
+	}
+}
+
+fileprivate extension Float {
+	mutating func lerp(to float: Float, t: Double) {
+		if self == float {
+			return
+		}
+		let difference = float - self
+		if abs(difference) < 0.001 {
+			self = float
+			return
+		}
+		self += Float(Double(difference) * t)
+	}
+}
+
 protocol AnimationCurve {
     func value(for progress: Double) -> Double
 }
