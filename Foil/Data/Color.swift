@@ -79,6 +79,10 @@ extension Color {
         self.blue = b
         self.alpha = a
     }
+
+	var nativeColor: NativeColor {
+		NativeColor(red: red, green: green, blue: blue, alpha: alpha)
+	}
 }
 
 // Convenience
